@@ -1,0 +1,25 @@
+{
+  "name": "mini-framework",
+  "version": "1.0.0",
+  "description": "mini-framework, by juss & joel",
+  "main": "dist/framework.min.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "build": "node build.js",
+    "dev": "nodemon server.js",
+    "test": "\"echo \\\"Error: no test specified!\" && exit 1\""
+  },
+  "keywords": [
+    "javascript",
+    "framework"
+  ],
+  "author": "Joel & Juss",
+  "license": "ISC",
+  "dependencies": {
+    "node-minify": "^3.6.0",
+    "replace-in-file": "^7.0.1"
+  }
+}
