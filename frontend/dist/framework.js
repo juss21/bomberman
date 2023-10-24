@@ -81,8 +81,8 @@ class EventListener {
 export const event = new EventListener();
 
 export function addEventListenerToElement(element, eventName, callback) {
-  element.addEventListener(eventName, (e) => {
-    callback(e);
+  element.addEventListener(eventName, (event) => {
+    callback(event);
     event.TriggerEvent(eventName); // Trigger your custom event after the callback
   });
 }
