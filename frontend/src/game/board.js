@@ -2,7 +2,8 @@ import { append, createElement } from "../../dist/framework.js";
 import { levelMaps } from "./maps/mapBuilder.js";
 // 15x13 tiles (60px each)
 export const tileSize = 60; // 60px
-const playerDisplacement = (tileSize - 48) / 2; // used to center the player
+export const characterSize = 48;
+const playerDisplacement = (tileSize - characterSize) / 2; // used to center the player
 const boardHeigth = 12 * tileSize + playerDisplacement;
 
 let Player1 = { X: 0, Y: 0, ID: 1 };
@@ -58,7 +59,7 @@ function createPlayer(Player = 1) {
   const player = createElement("div", {
     id: `Player-${Player.ID}`,
     class: "PlayerSprite",
-    style: `left:${Player.X}px;bottom:${Player.Y}px`,
+    style: `left:${Player.X}px;top:${Player.Y}px`,
   });
 
   append(parent, player);

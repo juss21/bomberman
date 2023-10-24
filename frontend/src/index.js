@@ -29,6 +29,8 @@ function render() {
   addEventListenerToElement(button, "click", () => {
     console.log("game started!");
     StartGame();
+    button.disabled = true;
+    append(app, button);
   });
 }
 
