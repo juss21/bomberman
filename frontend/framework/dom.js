@@ -1,9 +1,14 @@
 export function createElement(tag, attributes = {}, children = []) {
   const element = document.createElement(tag);
   for (const key in attributes) {
-    if (attributes.hasOwnProperty(key)) {
+    if (key === "innerHTML") {
+      element.innerHTML = attributes[key];
+    } else {
       element.setAttribute(key, attributes[key]);
     }
+    // if (attributes.hasOwnProperty(key)) {
+    //   element.setAttribute(key, attributes[key]);
+    // }
   }
   children.forEach((child) => {
     if (typeof child === "string") {
