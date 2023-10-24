@@ -6,4 +6,4 @@
 
 ### Authors:
 
-Juss & Joel & ????
+juss & kasepuu & alavrone & andreiRedi & laagusra
