@@ -3,7 +3,7 @@ import { levelMaps } from "./maps/mapBuilder.js";
 // 15x13 tiles (60px each)
 export const tileSize = 60; // 60px
 const playerDisplacement = (tileSize - 48) / 2; // used to center the player
-const boardHeigth = 13 * tileSize + 120 - playerDisplacement;
+const boardHeigth = 13 * tileSize + 60 + playerDisplacement;
 
 let Player1 = { X: 0, Y: 0, ID: 1 };
 let Player2 = { X: 0, Y: 0, ID: 2 };
