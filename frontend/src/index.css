@@ -41,14 +41,15 @@ body {
 #Player-4 {
   background-image: url("game/sprites/players/4.png");
 }
-
+.bomb {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-color: red;   
+}
 .explosion {
   width: 60px;
-  /* Adjust for your grid size */
   height: 60px;
-  /* Adjust for your grid size */
   background-color: orange;
-  /* Set the explosion color */
   position: absolute;
-  /* Add any other styling you want for the explosion effect */
 }
