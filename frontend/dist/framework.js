@@ -78,25 +78,25 @@ class EventListener {
   }
 }
 
-export const event = new EventListener();
+export const Event = new EventListener();
 
 export function addEventListenerToElement(element, eventName, callback) {
   element.addEventListener(eventName, (event) => {
     callback(event);
-    event.TriggerEvent(eventName); // Trigger your custom event after the callback
+    Event.TriggerEvent(eventName); // Trigger your custom event after the callback
   });
 }
 
 export function addEventListener(eventName, listener) {
-  event.AddEvent(eventName, listener);
+  Event.AddEvent(eventName, listener);
 }
 
 export function removeEventListener(eventName, listener) {
-  event.RemoveListener(eventName, listener);
+  Event.RemoveListener(eventName, listener);
 }
 
 export function removeAllEventListeners(eventName) {
-  event.removeAllListeners(eventName);
+  Event.removeAllListeners(eventName);
 }
 
 export class Router {
