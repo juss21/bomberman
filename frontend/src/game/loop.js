@@ -32,9 +32,7 @@ export function gameLoop() {
   // ..
 
   // Limiting frame rate by delaying the next frame if necessary
-  setTimeout(() => {
     animationFrameId = requestAnimationFrame(gameLoop);
-  }, frameCapping);
 }
 
 export function playerMovement() {
