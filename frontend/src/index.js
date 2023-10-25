@@ -3,7 +3,7 @@ import {
   append,
   State,
   loadCSS,
-  event,
+  Event,
   addEventListener,
   Router,
   addEventListenerToElement,
