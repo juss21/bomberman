@@ -78,14 +78,14 @@ export function drawTiles(currentLevel = 1) {
   createPlayer(Player4);
 
   for (let i = 0; i < levelMaps[0][0].length; i++) {
-    const mapRow = createElement("div", { class: "tile-row" });
+    const mapRow = createElement("div", { class: "tile-row", id: "tile"+i });
 
     for (let j = 0; j < levelMaps[0][0][i].length; j++) {
       let elem = levelMaps[0][0][i][j];
       if (elem === "1" || elem === "2" || elem === "3" || elem === "4")
         elem = "_";
-
       let img = createElement("img", {
+        id: "img"+j,
         src: `src/game/sprites/level0${currentLevel}/${elem}.png`,
       });
       append(mapRow, img);
