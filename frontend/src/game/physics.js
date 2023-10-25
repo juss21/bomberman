@@ -5,9 +5,13 @@ import { refreshRate } from "./overlay.js";
 
 let animationId = null;
 const keysPressed = {};
+let translateX = 0;
+let translateY = 0;
 
 export function movePlayer(event) {
     const player = document.getElementById("Player-1");
+    let left = parseInt(player.style.left);
+    let top = parseInt(player.style.top);
 
     if (event.key === " ") {
         plantBomb(player);
@@ -19,34 +23,30 @@ export function movePlayer(event) {
     if (animationId) return;
 
     function moveAnimation() {
-        const speed = Math.round(((3 * 60) / refreshRate) * 1000) / 1000;
+        const speed = (3 * 60) / refreshRate;
 
-        console.log(speed)
-        let left = parseInt(player.style.left);
-        let top = parseInt(player.style.top);
-
+        // Calculate new translations based on key presses
         if (keysPressed["W"] || keysPressed["w"] || keysPressed["ArrowUp"]) {
-            //animation siia
-            if (checkCollision(left, top - speed)) {
-                player.style.top = top - speed + "px";
-                //websocket event siia
+            if (checkCollision(left + translateX, top + translateY - speed)) {
+                translateY = translateY - speed;
             }
         }
         if (keysPressed["A"] || keysPressed["a"] || keysPressed["ArrowLeft"]) {
-            if (checkCollision(left - speed, top)) {
-                player.style.left = left - speed + "px";
+            if (checkCollision(left + translateX - speed, top + translateY)) {
+                translateX = translateX - speed;
             }
         }
         if (keysPressed["S"] || keysPressed["s"] || keysPressed["ArrowDown"]) {
-            if (checkCollision(left, top + speed)) {
-                player.style.top = top + speed + "px";
+            if (checkCollision(left + translateX, top + translateY + speed)) {
+                translateY = translateY + speed;
             }
         }
         if (keysPressed["D"] || keysPressed["d"] || keysPressed["ArrowRight"]) {
-            if (checkCollision(left + speed, top)) {
-                player.style.left = left + speed + "px";
+            if (checkCollision(left + translateX + speed, top + translateY)) {
+                translateX = translateX + speed;
             }
         }
+        player.style.transform = `translate(${translateX}px, ${translateY}px)`;
 
         animationId = requestAnimationFrame(moveAnimation);
     }
