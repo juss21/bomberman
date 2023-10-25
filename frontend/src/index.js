@@ -14,6 +14,7 @@ import { buildMaps } from "./game/maps/mapBuilder.js";
 loadCSS("./src/index.css");
 
 const app = document.getElementById("app");
+export const backendHost = `localhost:8081`;
 
 function render() {
   console.log("building maps");

@@ -1,37 +1,43 @@
-export class Event {
+import { backendHost } from "../index.js";
+import { addEventListenerToElement } from "../../dist/framework.js";
+import { gameLoop } from "./loop.js";
+class Event {
   constructor(type, payload) {
     this.type = type;
     this.payload = payload;
   }
 }
 
-export function sendEvent(type, payload) {
-  const event = new Event(type, payload);
-  window.socket.send(JSON.stringify(event));
+let socket;
+
+function updateGameState(serverData) {
+  console.log("updating gamestate:", serverData);
 }
 
-export function wsAddConnection() {
-  return new Promise((resolve, reject) => {
-    if (window["WebSocket"]) {
-      let currentUser = JSON.parse(sessionStorage.getItem("CurrentUser"));
-      const ws = new WebSocket(
-        `ws://localhost:8081/ws?NickName=${currentUser.UserID}`
-      );
-      ws.onopen = () => {
-        console.log("WebSocket Connection established!");
-        resolve(ws); // Resolve the promise with the WebSocket object when the connection is established.
-      };
-      ws.onclose = (e) => {
-        console.log("WebSocket connection Lost! Is the server running?", e);
-        resolve(e);
-      };
-      window.socket = ws;
-      window.addEventListener("beforeunload", function () {
-        ws.close();
-      });
-    } else {
-      alert("This browser does not support websockets!");
-      reject(new Error("WebSocket not supported"));
-    }
+export function startWebSocketConnction() {
+  socket = new WebSocket(`ws://${backendHost}/ws`);
+
+  addEventListenerToElement(socket, "open", (e) => {
+    console.log("WebSocket connection established.", e);
+    // playerMovement(); // start listening for player movements
+    gameLoop(); // start the game loop
   });
+
+  addEventListenerToElement(socket, "message", (event) => {
+    updateGameState(JSON.parse(event.data));
+  });
+
+  addEventListenerToElement(socket, "error", (error) => {
+    console.error("WebSocket error:", error);
+  });
+
+  addEventListenerToElement(socket, "close", (e) => {
+    console.log(`WebSocket connection closed. (${e})`);
+  });
+}
+
+export function sendEvent(type, payload) {
+  const event = new Event(type, payload);
+
+  socket.send(JSON.stringify(event));
 }

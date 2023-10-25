@@ -1,6 +1,6 @@
 import { drawTiles } from "./board.js";
-import { createElement, append, addEventListenerToElement } from "../../dist/framework.js";
-import { movePlayer, stopAnimation } from "./physics.js";
+import { createElement, append } from "../../dist/framework.js";
+import { startWebSocketConnction } from "./websocket.js";
 
 const app = document.getElementById("app");
 
@@ -27,8 +27,7 @@ export function StartGame() {
   console.log("game started.");
   CreateHtmlLayout();
   drawTiles();
-  // start game loop...
-}
 
-addEventListenerToElement(window ,"keydown", movePlayer);
-addEventListenerToElement(window, "keyup", stopAnimation);
+  // connecting with the websocket and starting the game loop
+  startWebSocketConnction();
+}
