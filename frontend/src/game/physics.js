@@ -50,7 +50,9 @@ export function movePlayer(event) {
     }, frameCapping);
   }
 
-  animationId = requestAnimationFrame(moveAnimation);
+  setTimeout(() => {
+    animationId = requestAnimationFrame(moveAnimation);
+  }, frameCapping);
 }
 
 export function stopAnimation(event) {
