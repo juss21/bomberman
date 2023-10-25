@@ -8,6 +8,7 @@ const keysPressed = {};
 let translateX = 0;
 let translateY = 0;
 let playerSpeed = 3;
+const gridSize = 60;
 
 export function movePlayer(event) {
     const player = document.getElementById("Player-1");
@@ -102,7 +103,6 @@ function explosionCollision(x, y) {
     let explosionTileX1 = x / tileSize;
     let explosionTileY1 = (y / tileSize) - 1;
     let currentTile = levelMaps[0][0][explosionTileY1][explosionTileX1];
-    console.log(explosionTileX1, explosionTileY1, currentTile)
 
     if (currentTile === "b") {
         const tile = document.getElementById("tile" + explosionTileY1);
@@ -126,7 +126,6 @@ function explosionCollision(x, y) {
 function plantBomb(player) {
     const bomb = document.createElement("div");
     bomb.className = "bomb";
-    const gridSize = 60;
 
     const playerRect = player.getBoundingClientRect();
     const playerLeft = playerRect.left;
@@ -152,35 +151,28 @@ function plantBomb(player) {
 function bombExplosion(bomb, bombPositionX, bombPositionY) {
 
     bomb.parentNode.removeChild(bomb);
+    createExplosion(bombPositionX, bombPositionY);
+
     const blastRange = 2;
 
-    let stopExploding = false;
+    const directions = [
+        [1, 0], [-1, 0], [0, 1], [0, -1] // Right, Left, Down, Up
+    ];
 
-    for (let i = 0; i <= blastRange && !stopExploding; i++) {
-        if (explosionCollision((bombPositionX + i * 60), bombPositionY)) {
-            createExplosion(bombPositionX + i * 60, bombPositionY);
-        } else stopExploding = true
-    }
-    stopExploding = false;
+    for (const [dx, dy] of directions) {
+        let x = bombPositionX;
+        let y = bombPositionY;
 
-    for (let i = 0; i >= -blastRange && !stopExploding; i--) {
-        if (explosionCollision((bombPositionX + i * 60), bombPositionY)) {
-            createExplosion(bombPositionX + i * 60, bombPositionY);
-        } else stopExploding = true
-    }
-    stopExploding = false;
+        for (let i = 0; i < blastRange; i++) {
+            x += dx * gridSize;
+            y += dy * gridSize;
 
-    for (let j = 0; j >= -blastRange && !stopExploding; j--) {
-        if (explosionCollision(bombPositionX, bombPositionY + j * 60)) {
-            createExplosion(bombPositionX, bombPositionY + j * 60);
-        } else stopExploding = true
-    }
+            if (!explosionCollision(x, y)) {
+                break;
+            }
 
-    stopExploding = false;
-    for (let j = 0; j <= blastRange && !stopExploding; j++) {
-        if (explosionCollision(bombPositionX, bombPositionY + j * 60)) {
-            createExplosion(bombPositionX, bombPositionY + j * 60);
-        } else stopExploding = true
+            createExplosion(x, y);
+        }
     }
 
     // Set a timer to remove the explosion elements after a certain duration
