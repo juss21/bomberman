@@ -19,7 +19,7 @@ export function movePlayer(event) {
     if (animationId) return;
 
     function moveAnimation() {
-        const speed = (3 * 60) / refreshRate;
+        const speed = Math.round(((3 * 60) / refreshRate) * 1000) / 1000;
 
         console.log(speed)
         let left = parseInt(player.style.left);

@@ -19,6 +19,6 @@ export function frameRate(frameTimes) {
     );
     setFrameCapping(1000 / 72);
   }*/
-  if (parseInt(fps) > 59) refreshRate = parseInt(fps)
+  if (parseInt(fps) > 60) refreshRate = parseInt(fps)-1
   document.getElementById("fps").innerHTML = "FPS: " + fps;
 }
