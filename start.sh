@@ -1,10 +1,16 @@
 #!/bin/bash
 
-# to install 2 node packages
-npm install --prefix="./frontend"
-
-# to build framework files in the "frontend" directory
-npm run build --prefix="./frontend"
-
-# to launch frontend
-npm start --prefix="./frontend"
+    echo "Installing dependencies..."
+    npm install --prefix frontend
+    npm run build --prefix frontend
+    echo "Dependencies installed."
+    
+# Start both frontend and backend servers concurrently
+(
+    echo "Starting frontend server..."
+    npm start --prefix frontend
+) & (
+    
+    echo "Starting backend server..."
+    go run ./backend/cmd
+)
