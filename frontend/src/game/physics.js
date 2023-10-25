@@ -1,6 +1,7 @@
 import { frameCapping } from "../index.js";
 import { tileSize, characterSize } from "./board.js";
 import { levelMaps } from "./maps/mapBuilder.js";
+import { refreshRate } from "./overlay.js";
 
 let animationId = null;
 const keysPressed = {};
@@ -17,8 +18,8 @@ export function movePlayer(event) {
 
   if (animationId) return;
 
-  function moveAnimation() {
-    const speed = 3;
+  function moveAnimation() { 
+    const speed = 3 * (60 / refreshRate);
     let left = parseInt(player.style.left);
     let top = parseInt(player.style.top);
 
@@ -45,14 +46,9 @@ export function movePlayer(event) {
       }
     }
 
-    setTimeout(() => {
       animationId = requestAnimationFrame(moveAnimation);
-    }, frameCapping);
   }
-
-  setTimeout(() => {
     animationId = requestAnimationFrame(moveAnimation);
-  }, frameCapping);
 }
 
 export function stopAnimation(event) {

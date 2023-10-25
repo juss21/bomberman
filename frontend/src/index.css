@@ -21,8 +21,9 @@ body {
 
 .PlayerSprite {
   position: absolute;
-  width: 55px;
-  height: 55px;
+  width: 48px;
+  height: 48px;
+  background-size: cover;
 }
 #Player-1 {
   background-image: url("game/sprites/players/1.png");
