@@ -62,8 +62,9 @@ export function plantBomb(player) {
 
     let explosionTileY = (bombPositionY / tileSize) - 1;
     let explosionTileX = (bombPositionX / tileSize);
-
-    if (levelMaps[0][0][explosionTileY][explosionTileX] !== "explosion") {
+    
+    let currentTile = levelMaps[0][0][explosionTileY][explosionTileX]
+    if (currentTile !== "explosion" && currentTile !== "!") {
         changeTile(explosionTileX, explosionTileY, "!")
         createBombTimer(explosionTileX, explosionTileY);
     }
