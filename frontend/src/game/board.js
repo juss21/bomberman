@@ -94,3 +94,10 @@ export function drawTiles(currentLevel = 1) {
   }
   append(parent, mapDiv);
 }
+
+export function changeTile(explosionTileX, explosionTileY, newTile) {
+  const tile = document.getElementById("tile" + explosionTileY);
+  const img = tile.querySelector("#img" + explosionTileX);
+  img.src = `src/game/sprites/level0${1}/${newTile}.png`;
+  levelMaps[0][0][explosionTileY][explosionTileX] = newTile;
+}

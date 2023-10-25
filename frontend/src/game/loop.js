@@ -1,7 +1,6 @@
 import { addEventListenerToElement } from "../../dist/framework.js";
-import { frameCapping } from "../index.js";
 import { frameRate } from "./overlay.js";
-import { movePlayer, stopAnimation } from "./physics.js";
+import { movePlayer, stopAnimation } from "./characterphysics.js";
 import { sendEvent } from "./websocket.js";
 
 // current state of game
@@ -18,8 +17,6 @@ let animationFrameId = null;
 const targetFrameRate = 60;
 let frameTimes = [];
 const frameDuration = 1000 / targetFrameRate;
-
-let lastFrameTime = 0;
 
 /* game loop  */
 export function gameLoop() {

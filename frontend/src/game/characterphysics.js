@@ -1,14 +1,14 @@
-import { frameCapping } from "../index.js";
 import { tileSize, characterSize } from "./board.js";
 import { levelMaps } from "./maps/mapBuilder.js";
 import { refreshRate } from "./overlay.js";
+import { plantBomb, setCanMoveThroughBomb, canMoveThroughBomb } from "./bombphysics.js";
 
 let animationId = null;
 const keysPressed = {};
 let translateX = 0;
 let translateY = 0;
 let playerSpeed = 3;
-const gridSize = 60;
+
 
 export function movePlayer(event) {
     const player = document.getElementById("Player-1");
@@ -71,114 +71,30 @@ export function characterCollision(x, y) {
     let characterTileX2 = Math.floor((x + characterSize) / tileSize);
     let characterTileY2 = Math.floor((y + characterSize) / tileSize);
 
+    if (canMoveThroughBomb &&
+        levelMaps[0][0][characterTileY1][characterTileX1] !== "!" &&
+        levelMaps[0][0][characterTileY1][characterTileX2] !== "!" &&
+        levelMaps[0][0][characterTileY2][characterTileX1] !== "!" &&
+        levelMaps[0][0][characterTileY2][characterTileX2] !== "!") setCanMoveThroughBomb(false)
+
     // Check if any of the character's four corners is on a collision tile
     for (let i = characterTileY1; i <= characterTileY2; i++) {
         for (let j = characterTileX1; j <= characterTileX2; j++) {
             let currentTile = levelMaps[0][0][i][j];
-            if (
+            if (canMoveThroughBomb && currentTile === "!") {
+                continue
+            } else if (
                 currentTile !== "_" &&
                 currentTile !== "1" &&
                 currentTile !== "2" &&
                 currentTile !== "3" &&
-                currentTile !== "4"
+                currentTile !== "4" &&
+                currentTile !== "explosion"
             ) {
                 return false;
-            }
+            } else if (currentTile === "explosion") { /* loseLife() */ }
         }
     }
     return true;
 }
 
-function createExplosion(x, y) {
-    const explosion = document.createElement("div");
-    explosion.className = "explosion";
-
-    explosion.style.left = x + "px";
-    explosion.style.top = y + "px";
-
-    document.body.appendChild(explosion);
-}
-
-function explosionCollision(x, y) {
-    let explosionTileX1 = x / tileSize;
-    let explosionTileY1 = (y / tileSize) - 1;
-    let currentTile = levelMaps[0][0][explosionTileY1][explosionTileX1];
-
-    if (currentTile === "b") {
-        const tile = document.getElementById("tile" + explosionTileY1);
-        const img = tile.querySelector("#img" + explosionTileX1);
-        img.src = `src/game/sprites/level0${1}/${"_"}.png`;
-        levelMaps[0][0][explosionTileY1][explosionTileX1] = "_";
-        createExplosion(x, y);
-        return false
-    } else if (
-        currentTile !== "_" &&
-        currentTile !== "1" &&
-        currentTile !== "2" &&
-        currentTile !== "3" &&
-        currentTile !== "4"
-    ) {
-        return false;
-    }
-    return true;
-}
-
-function plantBomb(player) {
-    const bomb = document.createElement("div");
-    bomb.className = "bomb";
-
-    const playerRect = player.getBoundingClientRect();
-    const playerLeft = playerRect.left;
-    const playerTop = playerRect.top;
-
-    const bombPositionX = Math.round(playerLeft / gridSize) * gridSize;
-    const bombPositionY = Math.round(playerTop / gridSize) * gridSize;
-
-    bomb.style.left = bombPositionX + "px";
-    bomb.style.top = bombPositionY + "px";
-
-    document.body.appendChild(bomb);
-
-    const bombExplodeDelay = 2000;
-    setTimeout(() => {
-        // bomb.parentNode.removeChild(bomb);
-        bombExplosion(bomb, bombPositionX, bombPositionY);
-        // Implement logic for the bomb's explosion here
-        // You can damage nearby objects or tiles, etc.
-    }, bombExplodeDelay);
-}
-
-function bombExplosion(bomb, bombPositionX, bombPositionY) {
-
-    bomb.parentNode.removeChild(bomb);
-    createExplosion(bombPositionX, bombPositionY);
-
-    const blastRange = 2;
-
-    const directions = [
-        [1, 0], [-1, 0], [0, 1], [0, -1] // Right, Left, Down, Up
-    ];
-
-    for (const [dx, dy] of directions) {
-        let x = bombPositionX;
-        let y = bombPositionY;
-
-        for (let i = 0; i < blastRange; i++) {
-            x += dx * gridSize;
-            y += dy * gridSize;
-
-            if (!explosionCollision(x, y)) {
-                break;
-            }
-
-            createExplosion(x, y);
-        }
-    }
-
-    // Set a timer to remove the explosion elements after a certain duration
-    const explosionDuration = 500;
-    setTimeout(() => {
-        const explosions = document.querySelectorAll(".explosion");
-        explosions.forEach((explosion) => explosion.parentNode.removeChild(explosion));
-    }, explosionDuration);
-}
