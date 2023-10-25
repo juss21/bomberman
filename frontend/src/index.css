@@ -45,11 +45,11 @@ body {
     position: absolute;
     width: 60px;
     height: 60px;
-    background-color: red;   
+    background-image: url("game/sprites/level01/!.png");
 }
 .explosion {
   width: 60px;
   height: 60px;
-  background-color: orange;
+  background-image: url("game/sprites/level01/explosion.png");
   position: absolute;
 }
