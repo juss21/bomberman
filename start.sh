@@ -14,3 +14,5 @@
     echo "Starting backend server..."
     go run ./backend/cmd
 )
+
+wait
