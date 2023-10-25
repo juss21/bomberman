@@ -7,6 +7,7 @@ let animationId = null;
 const keysPressed = {};
 let translateX = 0;
 let translateY = 0;
+let playerSpeed = 3;
 
 export function movePlayer(event) {
     const player = document.getElementById("Player-1");
@@ -23,26 +24,26 @@ export function movePlayer(event) {
     if (animationId) return;
 
     function moveAnimation() {
-        const speed = (3 * 60) / refreshRate;
+        const speed = (playerSpeed * 60) / refreshRate;
 
         // Calculate new translations based on key presses
         if (keysPressed["W"] || keysPressed["w"] || keysPressed["ArrowUp"]) {
-            if (checkCollision(left + translateX, top + translateY - speed)) {
+            if (characterCollision(left + translateX, top + translateY - speed)) {
                 translateY = translateY - speed;
             }
         }
         if (keysPressed["A"] || keysPressed["a"] || keysPressed["ArrowLeft"]) {
-            if (checkCollision(left + translateX - speed, top + translateY)) {
+            if (characterCollision(left + translateX - speed, top + translateY)) {
                 translateX = translateX - speed;
             }
         }
         if (keysPressed["S"] || keysPressed["s"] || keysPressed["ArrowDown"]) {
-            if (checkCollision(left + translateX, top + translateY + speed)) {
+            if (characterCollision(left + translateX, top + translateY + speed)) {
                 translateY = translateY + speed;
             }
         }
         if (keysPressed["D"] || keysPressed["d"] || keysPressed["ArrowRight"]) {
-            if (checkCollision(left + translateX + speed, top + translateY)) {
+            if (characterCollision(left + translateX + speed, top + translateY)) {
                 translateX = translateX + speed;
             }
         }
@@ -62,7 +63,7 @@ export function stopAnimation(event) {
     }
 }
 
-export function checkCollision(x, y) {
+export function characterCollision(x, y) {
     // Calculate the character's tile positions for all four corners
     let characterTileX1 = Math.floor(x / tileSize);
     let characterTileY1 = Math.floor(y / tileSize);
@@ -83,6 +84,41 @@ export function checkCollision(x, y) {
                 return false;
             }
         }
+    }
+    return true;
+}
+
+function createExplosion(x, y) {
+    const explosion = document.createElement("div");
+    explosion.className = "explosion";
+
+    explosion.style.left = x + "px";
+    explosion.style.top = y + "px";
+
+    document.body.appendChild(explosion);
+}
+
+function explosionCollision(x, y) {
+    let explosionTileX1 = x / tileSize;
+    let explosionTileY1 = (y / tileSize) - 1;
+    let currentTile = levelMaps[0][0][explosionTileY1][explosionTileX1];
+    console.log(explosionTileX1, explosionTileY1, currentTile)
+
+    if (currentTile === "b") {
+        const tile = document.getElementById("tile" + explosionTileY1);
+        const img = tile.querySelector("#img" + explosionTileX1);
+        img.src = `src/game/sprites/level0${1}/${"_"}.png`;
+        levelMaps[0][0][explosionTileY1][explosionTileX1] = "_";
+        createExplosion(x, y);
+        return false
+    } else if (
+        currentTile !== "_" &&
+        currentTile !== "1" &&
+        currentTile !== "2" &&
+        currentTile !== "3" &&
+        currentTile !== "4"
+    ) {
+        return false;
     }
     return true;
 }
@@ -118,22 +154,33 @@ function bombExplosion(bomb, bombPositionX, bombPositionY) {
     bomb.parentNode.removeChild(bomb);
     const blastRange = 2;
 
-    function createExplosion(x, y) {
-        const explosion = document.createElement("div");
-        explosion.className = "explosion";
+    let stopExploding = false;
 
-        explosion.style.left = x + "px";
-        explosion.style.top = y + "px";
+    for (let i = 0; i <= blastRange && !stopExploding; i++) {
+        if (explosionCollision((bombPositionX + i * 60), bombPositionY)) {
+            createExplosion(bombPositionX + i * 60, bombPositionY);
+        } else stopExploding = true
+    }
+    stopExploding = false;
 
-        document.body.appendChild(explosion);
+    for (let i = 0; i >= -blastRange && !stopExploding; i--) {
+        if (explosionCollision((bombPositionX + i * 60), bombPositionY)) {
+            createExplosion(bombPositionX + i * 60, bombPositionY);
+        } else stopExploding = true
+    }
+    stopExploding = false;
+
+    for (let j = 0; j >= -blastRange && !stopExploding; j--) {
+        if (explosionCollision(bombPositionX, bombPositionY + j * 60)) {
+            createExplosion(bombPositionX, bombPositionY + j * 60);
+        } else stopExploding = true
     }
 
-    for (let i = -blastRange; i <= blastRange; i++) {
-        createExplosion(bombPositionX + i * 60, bombPositionY);
-    }
-
-    for (let j = -blastRange; j <= blastRange; j++) {
-        createExplosion(bombPositionX, bombPositionY + j * 60);
+    stopExploding = false;
+    for (let j = 0; j <= blastRange && !stopExploding; j++) {
+        if (explosionCollision(bombPositionX, bombPositionY + j * 60)) {
+            createExplosion(bombPositionX, bombPositionY + j * 60);
+        } else stopExploding = true
     }
 
     // Set a timer to remove the explosion elements after a certain duration
