@@ -1,5 +1,6 @@
 import { addEventListenerToElement } from "../../dist/framework.js";
 import { movePlayer, stopAnimation } from "./physics.js";
+import { sendEvent } from "./websocket.js";
 
 // current state of game
 const gameState = {
@@ -21,7 +22,6 @@ export function gameLoop(timestamp) {
   const deltaTime = timestamp - lastFrameTime; // time elapsed since last frame
 
   // game logic, gamestate update
-  playerMovement();
 
   // socket.send(JSON.stringify(gameState)); // sending updated gameState
   // ..
@@ -39,7 +39,7 @@ export function gameLoop(timestamp) {
   }
 }
 
-function playerMovement() {
+export function playerMovement() {
   addEventListenerToElement(window, "keydown", movePlayer);
   addEventListenerToElement(window, "keyup", stopAnimation);
 }

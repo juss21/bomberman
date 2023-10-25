@@ -1,6 +1,6 @@
 import { backendHost } from "../index.js";
 import { addEventListenerToElement } from "../../dist/framework.js";
-import { gameLoop } from "./loop.js";
+import { gameLoop, playerMovement } from "./loop.js";
 class Event {
   constructor(type, payload) {
     this.type = type;
@@ -19,7 +19,7 @@ export function startWebSocketConnction() {
 
   addEventListenerToElement(socket, "open", (e) => {
     console.log("WebSocket connection established.", e);
-    // playerMovement(); // start listening for player movements
+    playerMovement(); // start listening for player movements
     gameLoop(); // start the game loop
   });
 
