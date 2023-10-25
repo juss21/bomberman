@@ -16,6 +16,11 @@ loadCSS("./src/index.css");
 const app = document.getElementById("app");
 export const backendHost = `localhost:8081`;
 
+export let frameCapping = 0;
+export const setFrameCapping = (value) => {
+  frameCapping = value;
+};
+
 function render() {
   console.log("building maps");
   buildMaps();

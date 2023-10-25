@@ -1,4 +1,5 @@
 import { addEventListenerToElement } from "../../dist/framework.js";
+import { frameRate } from "./overlay.js";
 import { movePlayer, stopAnimation } from "./physics.js";
 import { sendEvent } from "./websocket.js";
 
@@ -12,31 +13,27 @@ const gameState = {
 };
 
 /* frame limattion */
+let animationFrameId = null;
 const targetFrameRate = 60;
+let frameTimes = [];
 const frameDuration = 1000 / targetFrameRate;
 
 let lastFrameTime = 0;
 
 /* game loop  */
-export function gameLoop(timestamp) {
-  const deltaTime = timestamp - lastFrameTime; // time elapsed since last frame
+export function gameLoop() {
+  if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
 
   // game logic, gamestate update
+  frameRate(frameTimes);
 
   // socket.send(JSON.stringify(gameState)); // sending updated gameState
   // ..
 
-  lastFrameTime = timestamp;
-
   // Limiting frame rate by delaying the next frame if necessary
-  const timeToNextFrame = frameDuration - deltaTime;
-  if (timeToNextFrame > 0) {
-    setTimeout(() => {
-      requestAnimationFrame(gameLoop);
-    }, timeToNextFrame);
-  } else {
-    requestAnimationFrame(gameLoop);
-  }
+  setTimeout(() => {
+    animationFrameId = requestAnimationFrame(gameLoop);
+  }, frameTimes);
 }
 
 export function playerMovement() {
