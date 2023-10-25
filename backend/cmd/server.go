@@ -19,7 +19,7 @@ func StartServer(port string) {
 	})
 
 	log.Printf("backend is running at: http://localhost:" + port + "/\n")
-	log.Printf("frontend should be running at: http://localhost:" + "3000" + "/\n")
+	log.Printf("frontend should be running at: http://localhost:" + "8080" + "/\n")
 
 	errorHandler(http.ListenAndServe(":"+port, mux))
 }
