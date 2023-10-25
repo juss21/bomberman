@@ -1,4 +1,5 @@
 import { addEventListenerToElement } from "../../dist/framework.js";
+import { frameCapping } from "../index.js";
 import { frameRate } from "./overlay.js";
 import { movePlayer, stopAnimation } from "./physics.js";
 import { sendEvent } from "./websocket.js";
@@ -33,7 +34,7 @@ export function gameLoop() {
   // Limiting frame rate by delaying the next frame if necessary
   setTimeout(() => {
     animationFrameId = requestAnimationFrame(gameLoop);
-  }, frameTimes);
+  }, frameCapping);
 }
 
 export function playerMovement() {
