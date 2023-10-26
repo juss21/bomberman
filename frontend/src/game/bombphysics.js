@@ -1,7 +1,10 @@
-import { changeTile, tileSize } from "./board.js";
+import { changeTile, tileSize, addRandomPowerUp } from "./board.js";
 import { levelMaps } from "./maps/mapBuilder.js";
+import { playerData } from "./game.js";
+import { loseLife } from "./game.js";
+import { gameState } from "./gameState.js";
 
-var blastRange = 2;
+
 export let canMoveThroughBomb = false;
 const bombTimers = {};
 
@@ -9,15 +12,26 @@ export function setCanMoveThroughBomb(value) {
     canMoveThroughBomb = value;
 }
 
-function createExplosion(x, y) {
+function createExplosion(x, y, currentTile) {
     const xTile = x / tileSize
     const yTile = (y / tileSize) - 1
     changeTile(xTile, yTile, "explosion")
+    let characterTileX1 = Math.round((gameState.players[0].x) / tileSize);
+    let characterTileY1 = Math.round((gameState.players[0].y) / tileSize);
+
+    //console.log(characterTileX1, xTile, characterTileY1, yTile)
+    if (characterTileX1 === xTile && characterTileY1 === yTile) {
+        loseLife();
+    }
+
 
     // Set a timer to remove the explosion elements after a certain duration
     const explosionDuration = 500;
     setTimeout(() => {
-        changeTile(xTile, yTile, "_")
+        let newTile;
+        if (currentTile === "b") newTile = addRandomPowerUp();
+        else newTile = "_";
+        changeTile(xTile, yTile, newTile)
     }, explosionDuration);
 
     if (bombTimers[xTile] && bombTimers[xTile][yTile]) {
@@ -35,8 +49,7 @@ function explosionCollision(x, y) {
     }
     if (currentTile === "b") {
         changeTile(explosionTileX1, explosionTileY1, "_")
-        createExplosion(x, y);
-        /* addRandomPowerUp() */
+        createExplosion(x, y, currentTile);
         return false
     } else if (
         currentTile !== "_" &&
@@ -62,9 +75,10 @@ export function plantBomb(player) {
 
     let explosionTileY = (bombPositionY / tileSize) - 1;
     let explosionTileX = (bombPositionX / tileSize);
-    
+
     let currentTile = levelMaps[0][0][explosionTileY][explosionTileX]
     if (currentTile !== "explosion" && currentTile !== "!") {
+        playerData.bombs -= 1;
         changeTile(explosionTileX, explosionTileY, "!")
         createBombTimer(explosionTileX, explosionTileY);
     }
@@ -80,7 +94,7 @@ function createBombTimer(x, y) {
 }
 
 function bombExplosion(bombPositionX, bombPositionY, explosionTileX, explosionTileY) {
-
+    playerData.bombs += 1;
     changeTile(explosionTileX, explosionTileY, "_")
     createExplosion(bombPositionX, bombPositionY);
     const directions = [
@@ -91,7 +105,7 @@ function bombExplosion(bombPositionX, bombPositionY, explosionTileX, explosionTi
         let x = bombPositionX;
         let y = bombPositionY;
 
-        for (let i = 0; i < blastRange; i++) {
+        for (let i = 0; i < playerData.blastRange; i++) {
             x += dx * tileSize;
             y += dy * tileSize;
 

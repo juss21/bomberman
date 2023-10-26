@@ -1,4 +1,5 @@
 import { append, createElement } from "../../dist/framework.js";
+import { playerData } from "./game.js";
 import { levelMaps } from "./maps/mapBuilder.js";
 // 15x13 tiles (60px each)
 export const tileSize = 60; // 60px
@@ -61,7 +62,6 @@ function createPlayer(Player = 1) {
     class: "PlayerSprite",
     style: `left:${Player.X}px;top:${Player.Y}px`,
   });
-
   append(parent, player);
 }
 
@@ -82,8 +82,17 @@ export function drawTiles(currentLevel = 1) {
 
     for (let j = 0; j < levelMaps[0][0][i].length; j++) {
       let elem = levelMaps[0][0][i][j];
-      if (elem === "1" || elem === "2" || elem === "3" || elem === "4")
+      if (elem === "1" || elem === "2" || elem === "3" || elem === "4") {
         elem = "_";
+      } else if (elem === "b") {
+        if (Math.random() < 0.2) {
+          elem = "_"
+          levelMaps[0][0][i][j] = "_"
+        }
+      } else if (elem === "s") {
+        elem = "b"
+        levelMaps[0][0][i][j] = "b"
+      }
       let img = createElement("img", {
         id: "img" + j,
         src: `src/game/sprites/level0${currentLevel}/${elem}.png`,
@@ -96,8 +105,18 @@ export function drawTiles(currentLevel = 1) {
 }
 
 export function changeTile(explosionTileX, explosionTileY, newTile) {
+  console.log(newTile)
   const tile = document.getElementById("tile" + explosionTileY);
   const img = tile.querySelector("#img" + explosionTileX);
   img.src = `src/game/sprites/level0${1}/${newTile}.png`;
   levelMaps[0][0][explosionTileY][explosionTileX] = newTile;
+}
+
+export function addRandomPowerUp() {
+  let powerups = ["bomb", "blast", "speed"]
+  if (Math.random() < 0.2) {
+    let randomIndex = Math.floor(Math.random() * powerups.length);
+    return powerups[randomIndex];
+  }
+  else return "_"
 }

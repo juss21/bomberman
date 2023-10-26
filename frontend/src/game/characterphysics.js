@@ -1,4 +1,4 @@
-import { tileSize, characterSize } from "./board.js";
+import { tileSize, characterSize, changeTile } from "./board.js";
 import { levelMaps } from "./maps/mapBuilder.js";
 import { refreshRate } from "./overlay.js";
 import {
@@ -8,13 +8,14 @@ import {
 } from "./bombphysics.js";
 import { sendEvent } from "./websocket.js";
 import { gameState, updatePlayerCoordinates } from "./gameState.js";
+import { playerData, loseLife } from "./game.js";
 let animationId = null;
 const keysPressed = {};
 let translateX = 0;
 let translateY = 0;
-let playerSpeed = 3;
 
 export function movePlayer(event) {
+  if (playerData.lives < 1) return
   const playerId = parseInt(localStorage.getItem("Player"));
   if (!playerId || playerId === 0 || playerId > 4) {
     console.log("PlayerId has not been given, please restart your game!");
@@ -24,7 +25,7 @@ export function movePlayer(event) {
   let left = parseInt(player.style.left);
   let top = parseInt(player.style.top);
 
-  if (event.key === " ") {
+  if (event.key === " " && playerData.bombs > 0) {
     plantBomb(player);
     return;
   }
@@ -34,7 +35,7 @@ export function movePlayer(event) {
   if (animationId) return;
 
   function moveAnimation() {
-    const speed = (playerSpeed * 60) / refreshRate;
+    const speed = (playerData.speed * 60) / refreshRate;
 
     // Calculate new translations based on key presses
     if (keysPressed["W"] || keysPressed["w"] || keysPressed["ArrowUp"]) {
@@ -120,11 +121,23 @@ export function characterCollision(x, y) {
         currentTile !== "2" &&
         currentTile !== "3" &&
         currentTile !== "4" &&
-        currentTile !== "explosion"
+        currentTile !== "explosion" &&
+        currentTile !== "bomb" &&
+        currentTile !== "blast" &&
+        currentTile !== "speed"
       ) {
         return false;
       } else if (currentTile === "explosion") {
-        /* loseLife() */
+        loseLife()
+      } else if (currentTile === "bomb") {
+        playerData.bombs += 1;
+        changeTile(j, i, "_");
+      } else if (currentTile === "blast") {
+        playerData.blastRange += 1;
+        changeTile(j, i, "_");
+      } else if (currentTile === "speed") {
+        playerData.speed += 1;
+        changeTile(j, i, "_");
       }
     }
   }
