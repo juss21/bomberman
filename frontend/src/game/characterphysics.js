@@ -1,6 +1,6 @@
 import { tileSize, characterSize, changeTile, LevelMap } from "./board.js";
 
-import { refreshRate } from "./overlay.js";
+import { refreshRate, updateLifeCounter } from "./overlay.js";
 import {
   plantBomb,
   setCanMoveThroughBomb,
@@ -8,7 +8,6 @@ import {
 } from "./bombphysics.js";
 import { sendEvent } from "./websocket.js";
 import { gameState, updatePlayerCoordinates } from "./gameState.js";
-import { loseLife } from "./game.js";
 let animationId = null;
 const keysPressed = {};
 let translateX = 0;
@@ -164,4 +163,28 @@ function handleCollisionTile(currentTile, x, y) {
       TileY: y,
     });
   }
+}
+
+export function loseLife(playerId) {
+  console.log("Player:", playerId, "just lost a life!");
+  if (!gameState.players[playerId].Invincible) {
+    gameState.players[playerId].Lives -= 1;
+    gameState.players[playerId].Invincible = true;
+    let player = document.getElementById(`Player-${playerId + 1}`);
+    let livesCounter = document.getElementById("lives");
+    livesCounter.innerHTML = "Lives: " + gameState.players[playerId].Lives;
+    player.style.opacity = 0.5;
+    const explosionDuration = 2000;
+    setTimeout(() => {
+      gameState.players[playerId].Invincible = false;
+      player.style.opacity = 1;
+    }, explosionDuration);
+  }
+  if (gameState.players[playerId].Lives <= 0) {
+    let players = document.getElementById("players");
+    let player = document.getElementById(`Player-${playerId + 1}`);
+    if (player) players.removeChild(player);
+  }
+
+  updateLifeCounter();
 }

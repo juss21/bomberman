@@ -1,7 +1,8 @@
 import { backendHost } from "../index.js";
 import { changeTile, drawTiles } from "./board.js";
 import { spawnBomb } from "./bombphysics.js";
-import { updateGameState_player } from "./gameState.js";
+import { CreateHtmlLayout } from "./game.js";
+import { fillGameState_player, updateGameState_player } from "./gameState.js";
 import { gameLoop, playerMovement } from "./loop.js";
 export class Event {
   constructor(type, payload) {
@@ -27,9 +28,6 @@ export function startWebSocketConnction() {
       ws.onopen = () => {
         console.log("WebSocket Connection established!");
         sendEvent("request_playerid");
-
-        playerMovement(); // start listening for player movements
-        gameLoop(); // start the game loop
         resolve(ws); // Resolve the promise with the WebSocket object when the connection is established.
       };
       ws.onclose = (e) => {
@@ -67,9 +65,12 @@ function handlePlayerId(payload) {
   console.log("Server has set us as player:", `Player-${playerId}`);
 
   localStorage.setItem("Player", playerId);
+
   sendEvent("request_map", {
     playerId: playerId,
   });
+
+  fillGameState_player();
 }
 
 function handleMaxSlots() {
@@ -82,6 +83,8 @@ function handleUpdateGameStatePlayers(payload) {
 }
 
 function handleCurrentLevel(payload) {
+  playerMovement(); // start listening for player movements
+  gameLoop(); // start the game loop
   drawTiles(payload);
 }
 

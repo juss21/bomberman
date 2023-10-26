@@ -1,11 +1,5 @@
-import {
-  changeTile,
-  tileSize,
-  addRandomPowerUp,
-  characterSize,
-  LevelMap,
-} from "./board.js";
-import { loseLife } from "./game.js";
+import { changeTile, tileSize, characterSize, LevelMap } from "./board.js";
+import { loseLife } from "./characterphysics.js";
 import { gameState } from "./gameState.js";
 import { sendEvent } from "./websocket.js";
 
@@ -16,10 +10,32 @@ export function setCanMoveThroughBomb(value) {
   canMoveThroughBomb = value;
 }
 
-function createExplosion(x, y, currentTile) {
+function createExplosion(x, y, currentTile, playerId) {
   const xTile = x / tileSize;
   const yTile = y / tileSize - 1;
   changeTile(xTile, yTile, "explosion");
+
+  console.log("current: ", playerId);
+
+  let characterTileX1 = Math.floor(
+    gameState.players[playerId - 1].X / tileSize
+  );
+  let characterTileY1 = Math.floor(
+    gameState.players[playerId - 1].Y / tileSize
+  );
+  let characterTileX2 = Math.floor(
+    (gameState.players[playerId - 1].X + characterSize) / tileSize
+  );
+  let characterTileY2 = Math.floor(
+    (gameState.players[playerId - 1].Y + characterSize) / tileSize
+  );
+
+  if (
+    (characterTileX1 === xTile && characterTileY1 === yTile) ||
+    (characterTileX2 === xTile && characterTileY2 === yTile)
+  ) {
+    loseLife(playerId - 1);
+  }
 
   // Set a timer to remove the explosion elements after a certain duration
   const explosionDuration = 500;
@@ -51,7 +67,7 @@ function explosionCollision(x, y, playerId) {
     currentTile === "l" ||
     currentTile === "p"
   ) {
-    createExplosion(x, y, currentTile);
+    createExplosion(x, y, currentTile, playerId);
     return false;
   } else if (
     currentTile !== "_" &&
@@ -113,7 +129,7 @@ function bombExplosion(
 ) {
   gameState.players[playerId - 1].Bombs += 1;
   changeTile(explosionTileX, explosionTileY, "_");
-  createExplosion(bombPositionX, bombPositionY);
+  createExplosion(bombPositionX, bombPositionY, "", playerId);
   const directions = [
     [1, 0],
     [-1, 0],
@@ -132,7 +148,7 @@ function bombExplosion(
       if (!explosionCollision(x, y, playerId)) {
         break;
       }
-      createExplosion(x, y);
+      createExplosion(x, y, "", playerId);
     }
   }
 }

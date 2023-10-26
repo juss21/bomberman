@@ -1,31 +1,9 @@
-import { drawTiles } from "./board.js";
 import { createElement, append } from "../../dist/framework.js";
 import { startWebSocketConnction } from "./websocket.js";
-import { gameState } from "./gameState.js";
 
 const app = document.getElementById("app");
 
-export function loseLife(playerId) {
-  if (!gameState.players[playerId].Invincible) {
-    gameState.players[playerId].Lives -= 1;
-    gameState.players[playerId].Invincible = true;
-    let player = document.getElementById(`Player-${playerId + 1}`);
-    let livesCounter = document.getElementById("lives");
-    livesCounter.innerHTML = "Lives: " + gameState.players[playerId].Lives;
-    player.style.opacity = 0.5;
-    const explosionDuration = 2000;
-    setTimeout(() => {
-      gameState.players[playerId].Invincible = false;
-      player.style.opacity = 1;
-    }, explosionDuration);
-  }
-  if (gameState.players[playerId].Lives <= 0) {
-    let players = document.getElementById("players");
-    let player = document.getElementById(`Player-${playerId + 1}`);
-    if (player) players.removeChild(player);
-  }
-}
-function CreateHtmlLayout() {
+export function CreateHtmlLayout() {
   if (!document.getElementById("")) {
     const game = createElement("div", {
       class: "playground",
@@ -59,17 +37,18 @@ function CreateHtmlLayout() {
     // create fps counter
     const fpsCounter = createElement("div", { id: "fps" });
     append(overlay, fpsCounter);
-    const livesCounter = createElement("div", { id: "lives" });
-    livesCounter.innerHTML = "Lives: " + gameState.players[playerId].Lives;
+
+    // create lives counter
+    const livesCounter = createElement("div", {
+      id: "lives",
+      innerHTML: "Lives 3",
+    });
     append(overlay, livesCounter);
   }
 }
 
 export function StartGame() {
   console.log("game started.");
-  CreateHtmlLayout();
-  // drawTiles();
-
   // connecting with the websocket and starting the game loop
   startWebSocketConnction();
 }
