@@ -4,31 +4,24 @@ import { startWebSocketConnction } from "./websocket.js";
 import { gameState } from "./gameState.js";
 
 const app = document.getElementById("app");
-export const playerData = {
-  lives: 3,
-  bombs: 1,
-  speed: 3,
-  blastRange: 1,
-  invincible: false,
-};
 
-export function loseLife() {
-  if (!playerData.invincible) {
-    playerData.lives -= 1;
-    playerData.invincible = true;
-    let player = document.getElementById("Player-1");
+export function loseLife(playerId) {
+  if (!gameState.players[playerId].invincible) {
+    gameState.players[playerId].lives -= 1;
+    gameState.players[playerId].invincible = true;
+    let player = document.getElementById(`Player-${playerId+1}`);
     let livesCounter = document.getElementById("lives");
-    livesCounter.innerHTML = "Lives: " + playerData.lives;
+    livesCounter.innerHTML = "Lives: " + gameState.players[playerId].lives;
     player.style.opacity = 0.5;
     const explosionDuration = 2000;
     setTimeout(() => {
-      playerData.invincible = false;
+      gameState.players[playerId].invincible = false;
       player.style.opacity = 1;
     }, explosionDuration);
   }
-  if (playerData.lives <= 0) {
+  if (gameState.players[playerId].lives <= 0) {
     let players = document.getElementById("players");
-    let player = document.getElementById("Player-1");
+    let player = document.getElementById(`Player-${playerId+1}`);
     if (player) players.removeChild(player);
   }
 }
@@ -67,7 +60,7 @@ function CreateHtmlLayout() {
     const fpsCounter = createElement("div", { id: "fps" });
     append(overlay, fpsCounter);
     const livesCounter = createElement("div", { id: "lives" });
-    livesCounter.innerHTML = "Lives: " + playerData.lives;
+    livesCounter.innerHTML = "Lives: " + gameState.players[playerId].lives;
     append(overlay, livesCounter);
   }
 }

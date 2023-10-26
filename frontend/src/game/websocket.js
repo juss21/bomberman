@@ -39,7 +39,6 @@ export function startWebSocketConnction() {
         resolve(e);
       };
       ws.onmessage = (event) => {
-        console.log("WS Message received!");
         const message = JSON.parse(event.data);
 
         const handler = eventHandlers[message.type];
@@ -94,6 +93,6 @@ function handleNewBomb(payload) {
 }
 
 function handleChangeTile(payload) {
-  console.log("new bomb information:", payload);
+  
   changeTile(payload.TileX, payload.TileY, "_");
 }

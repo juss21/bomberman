@@ -47,8 +47,9 @@ function playerObject(Player) {
     y: Player.Y,
     lives: 3,
     bombs: 1,
-    flameRange: 1,
     speed: 3,
+    blastRange: 1,
+    invincible: false,
   };
 }
 

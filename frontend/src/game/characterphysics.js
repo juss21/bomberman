@@ -8,15 +8,15 @@ import {
 } from "./bombphysics.js";
 import { sendEvent } from "./websocket.js";
 import { gameState, updatePlayerCoordinates } from "./gameState.js";
-import { playerData, loseLife } from "./game.js";
+import { loseLife } from "./game.js";
 let animationId = null;
 const keysPressed = {};
 let translateX = 0;
 let translateY = 0;
 
 export function movePlayer(event) {
-  if (playerData.lives < 1) return;
   const playerId = parseInt(localStorage.getItem("Player"));
+  if (gameState.players[playerId-1].lives < 1) return;
   if (!playerId || playerId === 0 || playerId > 4) {
     console.log("PlayerId has not been given, please restart your game!");
     return;
@@ -25,8 +25,8 @@ export function movePlayer(event) {
   let left = parseInt(player.style.left);
   let top = parseInt(player.style.top);
 
-  if (event.key === " " && playerData.bombs > 0) {
-    plantBomb(player);
+  if (event.key === " " && gameState.players[playerId-1].bombs > 0) {
+    plantBomb(player, playerId);
     return;
   }
 
@@ -35,7 +35,7 @@ export function movePlayer(event) {
   if (animationId) return;
 
   function moveAnimation() {
-    const speed = (playerData.speed * 60) / refreshRate;
+    const speed = (gameState.players[playerId-1].speed * 60) / refreshRate;
 
     // Calculate new translations based on key presses
     if (keysPressed["W"] || keysPressed["w"] || keysPressed["ArrowUp"]) {
@@ -129,18 +129,19 @@ function isValidCollisionTile(currentTile) {
 }
 
 function handleCollisionTile(currentTile, x, y) {
+  const playerId = parseInt(localStorage.getItem("Player"));
   switch (currentTile) {
     case "explosion":
-      loseLife();
+      loseLife(playerId-1);
       break;
     case "bomb":
-      playerData.bombs += 1;
+      gameState.players[playerId-1].bombs += 1;
       break;
     case "blast":
-      playerData.blastRange += 1;
+      gameState.players[playerId-1].blastRange += 1;
       break;
     case "speed":
-      playerData.speed += 1;
+      gameState.players[playerId-1].speed += 1;
       break;
   }
 
