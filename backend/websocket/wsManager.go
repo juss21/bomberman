@@ -5,7 +5,6 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"strconv"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -44,18 +43,16 @@ func (m *wsManager) routeEvent(event Event, c *Client) error {
 	}
 }
 func (m *wsManager) ServeWs(w http.ResponseWriter, r *http.Request) {
-	userId, err := strconv.Atoi(r.URL.Query().Get("UserID"))
-	if err != nil {
-		log.Println("WebSocket: At connection, failed to fetch the UserID!")
-	}
 	// upgrade regular http connection into websocket
 	conn, err := websockerUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	client := NewClient(conn, m, userId)
+
+	client := NewClient(conn, m, 0)
 	m.addClient(client)
+
 	// go routines for client processes
 	go client.readMessages()
 	go client.writeMessages()
@@ -69,6 +66,7 @@ func (m *wsManager) removeClient(client *Client) {
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.clients[client]; ok {
+		RemovePlayer(client.playerId) // once player disconnects make the spot "available"
 		client.connection.Close()
 		delete(m.clients, client)
 	}

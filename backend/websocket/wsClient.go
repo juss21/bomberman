@@ -19,16 +19,16 @@ type ClientList map[*Client]bool
 type Client struct {
 	connection *websocket.Conn
 	client     *wsManager
-	userId     int
+	playerId   int
 	// unbuffered channel, to prevent connection getting too many connections
 	egress chan Event // avoid concurrent writes on the websocket connection
 }
 
-func NewClient(conn *websocket.Conn, client *wsManager, userIndex int) *Client {
+func NewClient(conn *websocket.Conn, client *wsManager, PlayerID int) *Client {
 	return &Client{
 		connection: conn,
 		client:     client,
-		userId:     userIndex,
+		playerId:   PlayerID,
 		egress:     make(chan Event),
 	}
 }

@@ -6,10 +6,10 @@ export const characterSize = 48;
 const playerDisplacement = (tileSize - characterSize) / 2; // used to center the player
 const boardHeigth = 12 * tileSize + playerDisplacement;
 
-let Player1 = { X: 0, Y: 0, ID: 1 };
-let Player2 = { X: 0, Y: 0, ID: 2 };
-let Player3 = { X: 0, Y: 0, ID: 3 };
-let Player4 = { X: 0, Y: 0, ID: 4 };
+export let Player1 = { X: 0, Y: 0, ID: 1 };
+export let Player2 = { X: 0, Y: 0, ID: 2 };
+export let Player3 = { X: 0, Y: 0, ID: 3 };
+export let Player4 = { X: 0, Y: 0, ID: 4 };
 
 function resetCoords() {
   Player1.X = 0;
@@ -78,14 +78,14 @@ export function drawTiles(currentLevel = 1) {
   createPlayer(Player4);
 
   for (let i = 0; i < levelMaps[0][0].length; i++) {
-    const mapRow = createElement("div", { class: "tile-row", id: "tile"+i });
+    const mapRow = createElement("div", { class: "tile-row", id: "tile" + i });
 
     for (let j = 0; j < levelMaps[0][0][i].length; j++) {
       let elem = levelMaps[0][0][i][j];
       if (elem === "1" || elem === "2" || elem === "3" || elem === "4")
         elem = "_";
       let img = createElement("img", {
-        id: "img"+j,
+        id: "img" + j,
         src: `src/game/sprites/level0${currentLevel}/${elem}.png`,
       });
       append(mapRow, img);

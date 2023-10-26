@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -34,9 +33,10 @@ func StartServer(port string) {
 	corsMux := &CorsHandler{ServeMux: mux}
 
 	corsMux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("ws connection attempt:")
 		http.HandlerFunc(wsManager.ServeWs).ServeHTTP(w, r)
 	})
+
+	ws.CreatePlayers() // create players
 
 	log.Printf("backend is running at: http://localhost:" + port + "/\n")
 	log.Printf("frontend should be running at: http://localhost:" + "8080" + "/\n")

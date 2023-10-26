@@ -2,15 +2,7 @@ import { addEventListenerToElement } from "../../dist/framework.js";
 import { frameRate } from "./overlay.js";
 import { movePlayer, stopAnimation } from "./characterphysics.js";
 import { sendEvent } from "./websocket.js";
-
-// current state of game
-const gameState = {
-  players: [], //players
-  bombs: [], //bombs placed
-  powerUps: [], //powerups dropped
-  map: [], //2d map array status (boxes to-be destroyed) (json.stringify(LevelMaps[0][0]))
-  chat: [], //chat log
-};
+import { Player1, Player2, Player3, Player4 } from "./board.js";
 
 /* frame limattion */
 let animationFrameId = null;
@@ -23,13 +15,14 @@ export function gameLoop() {
   if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
 
   // game logic, gamestate update
+
   frameRate(frameTimes);
 
   // socket.send(JSON.stringify(gameState)); // sending updated gameState
   // ..
 
   // Limiting frame rate by delaying the next frame if necessary
-    animationFrameId = requestAnimationFrame(gameLoop);
+  animationFrameId = requestAnimationFrame(gameLoop);
 }
 
 export function playerMovement() {
