@@ -16,8 +16,8 @@ export function updatePlayerCoordinates(playerId, newX, newY) {
 
   if (playerIndex !== -1) {
     // Player found, update coordinates
-    gameState.players[playerIndex].x = newX;
-    gameState.players[playerIndex].y = newY;
+    gameState.players[playerIndex].x = parseInt(newX);
+    gameState.players[playerIndex].y = parseInt(newY);
 
     if (
       gameState.players[playerIndex] != parseInt(localStorage.getItem("Player"))
