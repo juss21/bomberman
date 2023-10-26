@@ -22,8 +22,8 @@ export const setFrameCapping = (value) => {
 };
 
 function render() {
-  console.log("building maps");
-  buildMaps();
+  // console.log("building maps");
+  // buildMaps();
 
   const application = createElement("h1", { innerHTML: "test" });
   append(app, application);

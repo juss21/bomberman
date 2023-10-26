@@ -15,6 +15,7 @@ export function startWebSocketConnction() {
       ws.onopen = () => {
         console.log("WebSocket Connection established!");
         sendEvent("request_playerid");
+        sendEvent("request_map");
         fillGameState(); // create/fill gameState
         playerMovement(); // start listening for player movements
         gameLoop(); // start the game loop
