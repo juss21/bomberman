@@ -38,12 +38,12 @@ function createExplosion(x, y, currentTile) {
   }
 }
 
-function explosionCollision(x, y) {
+function explosionCollision(x, y, playerId) {
   let explosionTileX1 = x / tileSize;
   let explosionTileY1 = y / tileSize - 1;
   let currentTile = LevelMap[explosionTileY1][explosionTileX1];
   if (currentTile === "!") {
-    bombExplosion(x, y, explosionTileX1, explosionTileY1);
+    bombExplosion(x, y, explosionTileX1, explosionTileY1, playerId);
   }
   if (
     currentTile === "b" ||
@@ -120,12 +120,7 @@ function bombExplosion(
     [0, 1],
     [0, -1], // Right, Left, Down, Up
   ];
-  console.log(
-    "SIIN:",
-    gameState.players[playerId - 1].BlastRange,
-    "PlayerID:",
-    playerId
-  );
+
   for (const [dx, dy] of directions) {
     let x = bombPositionX;
     let y = bombPositionY;
@@ -134,7 +129,7 @@ function bombExplosion(
       x += dx * tileSize;
       y += dy * tileSize;
 
-      if (!explosionCollision(x, y)) {
+      if (!explosionCollision(x, y, playerId)) {
         break;
       }
       createExplosion(x, y);
