@@ -56,19 +56,17 @@ export function movePlayer(event) {
     if (keysPressed["D"] || keysPressed["d"] || keysPressed["ArrowRight"]) {
       if (characterCollision(left + translateX + speed, top + translateY)) {
         translateX = translateX + speed;
+
       }
     }
-    const newX = left + translateX;
-    const newY = top + translateY;
-
-    updatePlayerCoordinates(playerId, newX, newY);
+    updatePlayerCoordinates(playerId, translateX, translateY);
     player.style.transform = `translate(${translateX}px, ${translateY}px)`;
-
-    sendEvent("send_player_location", {
-      PlayerId: playerId,
-      GameState: { players: gameState.players },
-    }); // repeatedly update your position
-
+    if (animationId !== null) {
+      sendEvent("send_player_location", {
+        PlayerId: playerId,
+        GameState: { players: gameState.players },
+      }); // repeatedly update your position
+    }
     animationId = requestAnimationFrame(moveAnimation);
   }
   animationId = requestAnimationFrame(moveAnimation);
@@ -78,8 +76,7 @@ export function moveOtherPlayer(playerId, X, Y) {
   if (parseInt(localStorage.getItem("Player")) !== playerId) {
     const player = document.getElementById(`Player-${playerId}`);
     if (player) {
-      player.style.left = `${X}px`; // Set the new X position
-      player.style.top = `${Y}px`; // Set the new Y position
+      player.style.transform = `translate(${X}px, ${Y}px)`;
     }
   }
 }

@@ -1,4 +1,4 @@
-import { changeTile, tileSize, addRandomPowerUp } from "./board.js";
+import { changeTile, tileSize, addRandomPowerUp, characterSize } from "./board.js";
 import { levelMaps } from "./maps/mapBuilder.js";
 import { playerData } from "./game.js";
 import { loseLife } from "./game.js";
@@ -16,14 +16,14 @@ function createExplosion(x, y, currentTile) {
     const xTile = x / tileSize
     const yTile = (y / tileSize) - 1
     changeTile(xTile, yTile, "explosion")
-    let characterTileX1 = Math.round((gameState.players[0].x) / tileSize);
-    let characterTileY1 = Math.round((gameState.players[0].y) / tileSize);
+    let characterTileX1 = Math.floor((gameState.players[0].x) / tileSize);
+    let characterTileY1 = Math.floor((gameState.players[0].y) / tileSize);
+    let characterTileX2 = Math.floor((gameState.players[0].x + characterSize) / tileSize);
+    let characterTileY2 = Math.floor((gameState.players[0].y + characterSize) / tileSize);
 
-    //console.log(characterTileX1, xTile, characterTileY1, yTile)
-    if (characterTileX1 === xTile && characterTileY1 === yTile) {
+    if ((characterTileX1 === xTile && characterTileY1 === yTile) || (characterTileX2 === xTile && characterTileY2  === yTile)) {
         loseLife();
     }
-
 
     // Set a timer to remove the explosion elements after a certain duration
     const explosionDuration = 500;
@@ -48,7 +48,6 @@ function explosionCollision(x, y) {
         bombExplosion(x, y, explosionTileX1, explosionTileY1)
     }
     if (currentTile === "b") {
-        changeTile(explosionTileX1, explosionTileY1, "_")
         createExplosion(x, y, currentTile);
         return false
     } else if (
@@ -56,7 +55,10 @@ function explosionCollision(x, y) {
         currentTile !== "1" &&
         currentTile !== "2" &&
         currentTile !== "3" &&
-        currentTile !== "4"
+        currentTile !== "4" &&
+        currentTile !== "bomb" &&
+        currentTile !== "blast" &&
+        currentTile !== "speed"
     ) {
         return false;
     }

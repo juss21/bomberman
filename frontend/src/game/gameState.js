@@ -23,18 +23,12 @@ export function updatePlayerCoordinates(playerId, newX, newY) {
       gameState.players[playerIndex] != parseInt(localStorage.getItem("Player"))
     )
       moveOtherPlayer(playerId, newX, newY);
-    console.log(`Moving player ${playerId} to (${newX}, ${newY})`);
   } else {
     console.error("Invalid player ID");
   }
 }
 
 export function updateGameState_player(playerID, newX, newY) {
-  console.log(
-    "updating location for:",
-    playerID,
-    `coordinates: (${newX},${newY})`
-  );
   // find the user that sent update to the others
   const PlayerIndex = gameState.players.findIndex(
     (player) => player.ID === playerID
