@@ -24,7 +24,7 @@ export function updatePlayerCoordinates(playerId, newX, newY) {
     )
       moveOtherPlayer(playerId, newX, newY);
   } else {
-    console.error("Invalid player ID");
+    console.error("Invalid player ID", playerId, playerIndex);
   }
 }
 
@@ -55,7 +55,7 @@ function playerObject(Player) {
   };
 }
 
-export function fillGameState() {
+export function fillGameState_player() {
   const p1 = playerObject(Player1);
   const p2 = playerObject(Player2);
   const p3 = playerObject(Player3);

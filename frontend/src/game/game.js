@@ -9,8 +9,8 @@ export const playerData = {
   bombs: 1,
   speed: 3,
   blastRange: 1,
-  invincible: false
-}
+  invincible: false,
+};
 
 export function loseLife() {
   if (!playerData.invincible) {
@@ -27,8 +27,8 @@ export function loseLife() {
     }, explosionDuration);
   }
   if (playerData.lives <= 0) {
-    let players = document.getElementById("players")
-    let player = document.getElementById("Player-1")
+    let players = document.getElementById("players");
+    let player = document.getElementById("Player-1");
     if (player) players.removeChild(player);
   }
 }
@@ -75,7 +75,7 @@ function CreateHtmlLayout() {
 export function StartGame() {
   console.log("game started.");
   CreateHtmlLayout();
-  drawTiles();
+  // drawTiles();
 
   // connecting with the websocket and starting the game loop
   startWebSocketConnction();

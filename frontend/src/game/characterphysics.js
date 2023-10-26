@@ -1,5 +1,5 @@
-import { tileSize, characterSize, changeTile } from "./board.js";
-import { levelMaps } from "./maps/mapBuilder.js";
+import { tileSize, characterSize, changeTile, LevelMap } from "./board.js";
+
 import { refreshRate } from "./overlay.js";
 import {
   plantBomb,
@@ -15,7 +15,7 @@ let translateX = 0;
 let translateY = 0;
 
 export function movePlayer(event) {
-  if (playerData.lives < 1) return
+  if (playerData.lives < 1) return;
   const playerId = parseInt(localStorage.getItem("Player"));
   if (!playerId || playerId === 0 || playerId > 4) {
     console.log("PlayerId has not been given, please restart your game!");
@@ -56,7 +56,6 @@ export function movePlayer(event) {
     if (keysPressed["D"] || keysPressed["d"] || keysPressed["ArrowRight"]) {
       if (characterCollision(left + translateX + speed, top + translateY)) {
         translateX = translateX + speed;
-
       }
     }
     updatePlayerCoordinates(playerId, translateX, translateY);
@@ -99,17 +98,17 @@ export function characterCollision(x, y) {
 
   if (
     canMoveThroughBomb &&
-    levelMaps[0][0][characterTileY1][characterTileX1] !== "!" &&
-    levelMaps[0][0][characterTileY1][characterTileX2] !== "!" &&
-    levelMaps[0][0][characterTileY2][characterTileX1] !== "!" &&
-    levelMaps[0][0][characterTileY2][characterTileX2] !== "!"
+    LevelMap[characterTileY1][characterTileX1] !== "!" &&
+    LevelMap[characterTileY1][characterTileX2] !== "!" &&
+    LevelMap[characterTileY2][characterTileX1] !== "!" &&
+    LevelMap[characterTileY2][characterTileX2] !== "!"
   )
     setCanMoveThroughBomb(false);
 
   // Check if any of the character's four corners is on a collision tile
   for (let i = characterTileY1; i <= characterTileY2; i++) {
     for (let j = characterTileX1; j <= characterTileX2; j++) {
-      let currentTile = levelMaps[0][0][i][j];
+      let currentTile = LevelMap[i][j];
       if (canMoveThroughBomb && currentTile === "!") {
         continue;
       } else if (
@@ -125,16 +124,31 @@ export function characterCollision(x, y) {
       ) {
         return false;
       } else if (currentTile === "explosion") {
-        loseLife()
+        loseLife();
       } else if (currentTile === "bomb") {
         playerData.bombs += 1;
         changeTile(j, i, "_");
+        sendEvent("request_changeTile", {
+          playerId: parseInt(localStorage.getItem("Player")),
+          TileX: j,
+          TileY: i,
+        });
       } else if (currentTile === "blast") {
         playerData.blastRange += 1;
         changeTile(j, i, "_");
+        sendEvent("request_changeTile", {
+          playerId: parseInt(localStorage.getItem("Player")),
+          TileX: j,
+          TileY: i,
+        });
       } else if (currentTile === "speed") {
         playerData.speed += 1;
         changeTile(j, i, "_");
+        sendEvent("request_changeTile", {
+          PlayerId: parseInt(localStorage.getItem("Player")),
+          TileX: j,
+          TileY: i,
+        });
       }
     }
   }

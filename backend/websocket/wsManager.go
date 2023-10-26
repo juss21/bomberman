@@ -66,6 +66,9 @@ func (m *wsManager) removeClient(client *Client) {
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.clients[client]; ok {
+		if len(m.clients) == 0 {
+			levelMap.Map = nil // reset generated map
+		}
 		RemovePlayer(client.playerId) // once player disconnects make the spot "available"
 		client.connection.Close()
 		delete(m.clients, client)

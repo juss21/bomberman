@@ -15,8 +15,13 @@ type EventHandler func(event Event, c *Client) error
 // event handlers
 func (m *wsManager) setupEventHandlers() {
 	// m.handlers["send_gamestate"] = NewGameStateu
+	m.handlers["request_map"] = GenerateMap
 	m.handlers["send_player_location"] = UpdatePlayerMovement
 	m.handlers["request_playerid"] = NewPlayer
+
+	/*other events*/
+	m.handlers["bomb_placed"] = PlaceBomb
+	m.handlers["request_changeTile"] = ChangeTile
 }
 func SendResponse(responseData any, event string, c *Client) {
 	response, err := json.Marshal(responseData)

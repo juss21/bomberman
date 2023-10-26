@@ -1,5 +1,7 @@
 import { backendHost } from "../index.js";
-import { fillGameState, updateGameState_player } from "./gameState.js";
+import { changeTile, drawTiles } from "./board.js";
+import { spawnBomb } from "./bombphysics.js";
+import { updateGameState_player } from "./gameState.js";
 import { gameLoop, playerMovement } from "./loop.js";
 export class Event {
   constructor(type, payload) {
@@ -15,8 +17,7 @@ export function startWebSocketConnction() {
       ws.onopen = () => {
         console.log("WebSocket Connection established!");
         sendEvent("request_playerid");
-        sendEvent("request_map");
-        fillGameState(); // create/fill gameState
+
         playerMovement(); // start listening for player movements
         gameLoop(); // start the game loop
         resolve(ws); // Resolve the promise with the WebSocket object when the connection is established.
@@ -38,6 +39,9 @@ export function startWebSocketConnction() {
           console.log("Server has set us as player:", `Player-${playerId}`);
 
           localStorage.setItem("Player", playerId);
+          sendEvent("request_map", {
+            playerId: playerId,
+          });
         } else if (message.type === "max-slots") {
           console.log("Lobby is full!");
         } else if (message.type === "update_gamestate_players") {
@@ -47,6 +51,17 @@ export function startWebSocketConnction() {
             payload.PlayerNewX,
             payload.PlayerNewY
           );
+        } else if (message.type === "currentlevel") {
+          const payload = message.payload;
+          drawTiles(payload);
+        } else if (message.type === "new_bomb") {
+          const payload = message.payload;
+          spawnBomb(payload.PlayerId, payload.BombX, payload.BombY);
+        } else if (message.type === "changeTile") {
+          const payload = message.payload;
+          console.log("new bomb information:", payload);
+
+          changeTile(payload.TileX, payload.TileY, "_");
         }
       };
 
@@ -61,7 +76,6 @@ export function startWebSocketConnction() {
   });
 }
 export function sendEvent(type, payload) {
-  // console.log("Sendinng event:", payload);
   const event = new Event(type, payload);
   window.socket.send(JSON.stringify(event));
 }

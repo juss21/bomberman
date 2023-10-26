@@ -1,6 +1,5 @@
 import { append, createElement } from "../../dist/framework.js";
-import { playerData } from "./game.js";
-import { levelMaps } from "./maps/mapBuilder.js";
+import { fillGameState_player } from "./gameState.js";
 // 15x13 tiles (60px each)
 export const tileSize = 60; // 60px
 export const characterSize = 48;
@@ -12,6 +11,7 @@ export let Player2 = { X: 0, Y: 0, ID: 2 };
 export let Player3 = { X: 0, Y: 0, ID: 3 };
 export let Player4 = { X: 0, Y: 0, ID: 4 };
 
+export let LevelMap = [[]];
 function resetCoords() {
   Player1.X = 0;
   Player1.Y = 0;
@@ -65,33 +65,28 @@ function createPlayer(Player = 1) {
   append(parent, player);
 }
 
-export function drawTiles(currentLevel = 1) {
+export function drawTiles(map, currentLevel = 1) {
+  const boardMap = map.map;
   const parent = document.getElementById("tileMap");
   parent.innerHTML = "";
 
-  const mapDiv = createElement("div", { class: "tile-map", id: "tile-map" });
+  LevelMap = boardMap;
 
-  fetchCoordinates(levelMaps[0][0]);
+  const mapDiv = createElement("div", { class: "tile-map", id: "tile-map" });
+  fetchCoordinates(boardMap);
   createPlayer(Player1);
   createPlayer(Player2);
   createPlayer(Player3);
   createPlayer(Player4);
+  fillGameState_player();
 
-  for (let i = 0; i < levelMaps[0][0].length; i++) {
+  for (let i = 0; i < boardMap.length; i++) {
     const mapRow = createElement("div", { class: "tile-row", id: "tile" + i });
 
-    for (let j = 0; j < levelMaps[0][0][i].length; j++) {
-      let elem = levelMaps[0][0][i][j];
+    for (let j = 0; j < boardMap[i].length; j++) {
+      let elem = boardMap[i][j];
       if (elem === "1" || elem === "2" || elem === "3" || elem === "4") {
         elem = "_";
-      } else if (elem === "b") {
-        if (Math.random() < 0.2) {
-          elem = "_"
-          levelMaps[0][0][i][j] = "_"
-        }
-      } else if (elem === "s") {
-        elem = "b"
-        levelMaps[0][0][i][j] = "b"
       }
       let img = createElement("img", {
         id: "img" + j,
@@ -105,18 +100,17 @@ export function drawTiles(currentLevel = 1) {
 }
 
 export function changeTile(explosionTileX, explosionTileY, newTile) {
-  console.log(newTile)
+  console.log(newTile);
   const tile = document.getElementById("tile" + explosionTileY);
   const img = tile.querySelector("#img" + explosionTileX);
   img.src = `src/game/sprites/level0${1}/${newTile}.png`;
-  levelMaps[0][0][explosionTileY][explosionTileX] = newTile;
+  LevelMap[explosionTileY][explosionTileX] = newTile;
 }
 
 export function addRandomPowerUp() {
-  let powerups = ["bomb", "blast", "speed"]
+  let powerups = ["bomb", "blast", "speed"];
   if (Math.random() < 0.2) {
     let randomIndex = Math.floor(Math.random() * powerups.length);
     return powerups[randomIndex];
-  }
-  else return "_"
+  } else return "_";
 }

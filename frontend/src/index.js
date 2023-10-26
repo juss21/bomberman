@@ -9,7 +9,6 @@ import {
   addEventListenerToElement,
 } from "../dist/framework.js";
 import { StartGame } from "./game/game.js";
-import { buildMaps } from "./game/maps/mapBuilder.js";
 
 loadCSS("./src/index.css");
 
