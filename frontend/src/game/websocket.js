@@ -10,14 +10,13 @@ export class Event {
   }
 }
 
-
 const eventHandlers = {
-  "playerId": handlePlayerId,
+  playerId: handlePlayerId,
   "max-slots": handleMaxSlots,
-  "update_gamestate_players": handleUpdateGameStatePlayers,
-  "currentlevel": handleCurrentLevel,
-  "new_bomb": handleNewBomb,
-  "changeTile": handleChangeTile
+  update_gamestate_players: handleUpdateGameStatePlayers,
+  currentlevel: handleCurrentLevel,
+  new_bomb: handleNewBomb,
+  changeTile: handleChangeTile,
 };
 
 export function startWebSocketConnction() {
@@ -62,7 +61,6 @@ export function sendEvent(type, payload) {
   window.socket.send(JSON.stringify(event));
 }
 
-
 function handlePlayerId(payload) {
   const playerId = payload;
 
@@ -79,8 +77,8 @@ function handleMaxSlots() {
 }
 
 function handleUpdateGameStatePlayers(payload) {
-  const { PlayerId, PlayerNewX, PlayerNewY } = payload;
-  updateGameState_player(PlayerId, PlayerNewX, PlayerNewY);
+  const { PlayerId, GameState } = payload;
+  updateGameState_player(PlayerId, GameState);
 }
 
 function handleCurrentLevel(payload) {
@@ -93,6 +91,5 @@ function handleNewBomb(payload) {
 }
 
 function handleChangeTile(payload) {
-  
   changeTile(payload.TileX, payload.TileY, "_");
 }

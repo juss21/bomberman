@@ -6,22 +6,22 @@ import { gameState } from "./gameState.js";
 const app = document.getElementById("app");
 
 export function loseLife(playerId) {
-  if (!gameState.players[playerId].invincible) {
-    gameState.players[playerId].lives -= 1;
-    gameState.players[playerId].invincible = true;
-    let player = document.getElementById(`Player-${playerId+1}`);
+  if (!gameState.players[playerId].Invincible) {
+    gameState.players[playerId].Lives -= 1;
+    gameState.players[playerId].Invincible = true;
+    let player = document.getElementById(`Player-${playerId + 1}`);
     let livesCounter = document.getElementById("lives");
-    livesCounter.innerHTML = "Lives: " + gameState.players[playerId].lives;
+    livesCounter.innerHTML = "Lives: " + gameState.players[playerId].Lives;
     player.style.opacity = 0.5;
     const explosionDuration = 2000;
     setTimeout(() => {
-      gameState.players[playerId].invincible = false;
+      gameState.players[playerId].Invincible = false;
       player.style.opacity = 1;
     }, explosionDuration);
   }
-  if (gameState.players[playerId].lives <= 0) {
+  if (gameState.players[playerId].Lives <= 0) {
     let players = document.getElementById("players");
-    let player = document.getElementById(`Player-${playerId+1}`);
+    let player = document.getElementById(`Player-${playerId + 1}`);
     if (player) players.removeChild(player);
   }
 }
@@ -60,7 +60,7 @@ function CreateHtmlLayout() {
     const fpsCounter = createElement("div", { id: "fps" });
     append(overlay, fpsCounter);
     const livesCounter = createElement("div", { id: "lives" });
-    livesCounter.innerHTML = "Lives: " + gameState.players[playerId].lives;
+    livesCounter.innerHTML = "Lives: " + gameState.players[playerId].Lives;
     append(overlay, livesCounter);
   }
 }

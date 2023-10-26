@@ -16,7 +16,7 @@ let translateY = 0;
 
 export function movePlayer(event) {
   const playerId = parseInt(localStorage.getItem("Player"));
-  if (gameState.players[playerId-1].lives < 1) return;
+  if (gameState.players[playerId - 1].Lives < 1) return;
   if (!playerId || playerId === 0 || playerId > 4) {
     console.log("PlayerId has not been given, please restart your game!");
     return;
@@ -25,7 +25,7 @@ export function movePlayer(event) {
   let left = parseInt(player.style.left);
   let top = parseInt(player.style.top);
 
-  if (event.key === " " && gameState.players[playerId-1].bombs > 0) {
+  if (event.key === " " && gameState.players[playerId - 1].Bombs > 0) {
     plantBomb(player, playerId);
     return;
   }
@@ -35,7 +35,7 @@ export function movePlayer(event) {
   if (animationId) return;
 
   function moveAnimation() {
-    const speed = (gameState.players[playerId-1].speed * 60) / refreshRate;
+    const speed = (gameState.players[playerId - 1].Speed * 60) / refreshRate;
 
     // Calculate new translations based on key presses
     if (keysPressed["W"] || keysPressed["w"] || keysPressed["ArrowUp"]) {
@@ -61,7 +61,7 @@ export function movePlayer(event) {
     updatePlayerCoordinates(playerId, translateX, translateY);
     player.style.transform = `translate(${translateX}px, ${translateY}px)`;
     if (animationId !== null) {
-      sendEvent("send_player_location", {
+      sendEvent("send_gamestate_upgrade", {
         PlayerId: playerId,
         GameState: { players: gameState.players },
       }); // repeatedly update your position
@@ -102,7 +102,8 @@ export function characterCollision(x, y) {
     LevelMap[characterTileY1][characterTileX2] !== "!" &&
     LevelMap[characterTileY2][characterTileX1] !== "!" &&
     LevelMap[characterTileY2][characterTileX2] !== "!"
-  ) setCanMoveThroughBomb(false);
+  )
+    setCanMoveThroughBomb(false);
 
   // Check if any of the character's four corners is on a collision tile
   for (let i = characterTileY1; i <= characterTileY2; i++) {
@@ -124,7 +125,17 @@ export function characterCollision(x, y) {
 }
 
 function isValidCollisionTile(currentTile) {
-  const nonBlockingTiles = ["_", "1", "2", "3", "4", "explosion", "bomb", "blast", "speed"];
+  const nonBlockingTiles = [
+    "_",
+    "1",
+    "2",
+    "3",
+    "4",
+    "explosion",
+    "bomb",
+    "blast",
+    "speed",
+  ];
   return nonBlockingTiles.includes(currentTile);
 }
 
@@ -132,16 +143,16 @@ function handleCollisionTile(currentTile, x, y) {
   const playerId = parseInt(localStorage.getItem("Player"));
   switch (currentTile) {
     case "explosion":
-      loseLife(playerId-1);
+      loseLife(playerId - 1);
       break;
     case "bomb":
-      gameState.players[playerId-1].bombs += 1;
+      gameState.players[playerId - 1].Bombs += 1;
       break;
     case "blast":
-      gameState.players[playerId-1].blastRange += 1;
+      gameState.players[playerId - 1].BlastRange += 1;
       break;
     case "speed":
-      gameState.players[playerId-1].speed += 1;
+      gameState.players[playerId - 1].Speed += 1;
       break;
   }
 

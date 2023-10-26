@@ -16,7 +16,8 @@ type EventHandler func(event Event, c *Client) error
 func (m *wsManager) setupEventHandlers() {
 	// m.handlers["send_gamestate"] = NewGameStateu
 	m.handlers["request_map"] = GenerateMap
-	m.handlers["send_player_location"] = UpdatePlayerMovement
+	m.handlers["send_gamestate_upgrade"] = UpdatePlayerGameState
+
 	m.handlers["request_playerid"] = NewPlayer
 
 	/*other events*/

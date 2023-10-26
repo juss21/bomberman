@@ -8,16 +8,17 @@ export const gameState = {
 
 export function updatePlayerCoordinates(playerId, newX, newY) {
   const playerIndex = gameState.players.findIndex(
-    (player) => player.id === playerId
+    (player) => player.ID === playerId
   );
 
   if (playerIndex !== -1) {
     // Player found, update coordinates
-    gameState.players[playerIndex].x = parseInt(newX);
-    gameState.players[playerIndex].y = parseInt(newY);
+    gameState.players[playerIndex].X = parseInt(newX);
+    gameState.players[playerIndex].Y = parseInt(newY);
 
     if (
-      gameState.players[playerIndex] != parseInt(localStorage.getItem("Player"))
+      gameState.players[playerIndex].ID !=
+      parseInt(localStorage.getItem("Player"))
     )
       moveOtherPlayer(playerId, newX, newY);
   } else {
@@ -25,16 +26,16 @@ export function updatePlayerCoordinates(playerId, newX, newY) {
   }
 }
 
-export function updateGameState_player(playerID, newX, newY) {
+export function updateGameState_player(playerID, GameState) {
   // find the user that sent update to the others
   const PlayerIndex = gameState.players.findIndex(
     (player) => player.ID === playerID
   );
 
-  // if (PlayerIndex !== -1 && PlayerIndex) {
-  // gameState.players[PlayerIndex].X = newX;
-  // gameState.players[PlayerIndex].Y = newY;
-  // }
+  gameState.players[PlayerIndex] = GameState;
+
+  const newX = gameState.players[PlayerIndex].X;
+  const newY = gameState.players[PlayerIndex].Y;
 
   updatePlayerCoordinates(playerID, newX, newY);
 }
@@ -42,14 +43,14 @@ export function updateGameState_player(playerID, newX, newY) {
 function playerObject(Player) {
   if (Player.X === 0 || Player.Y === 0) return undefined; // if player does not exist // not on board
   return {
-    id: Player.ID,
-    x: Player.X,
-    y: Player.Y,
-    lives: 3,
-    bombs: 1,
-    speed: 3,
-    blastRange: 1,
-    invincible: false,
+    ID: Player.ID,
+    X: Player.X,
+    Y: Player.Y,
+    Lives: 3,
+    Bombs: 1,
+    Speed: 3,
+    BlastRange: 1,
+    Invincible: false,
   };
 }
 
