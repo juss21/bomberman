@@ -3,9 +3,6 @@ import { moveOtherPlayer } from "./characterphysics.js";
 // current state of game
 export const gameState = {
   players: [], //players
-  bombs: [], //bombs placed
-  powerUps: [], //powerups dropped
-  map: [], //2d map array status (boxes to-be destroyed) (json.stringify(LevelMaps[0][0]))
   chat: [], //chat log
 };
 

@@ -75,9 +75,9 @@ function explosionCollision(x, y) {
     currentTile !== "2" &&
     currentTile !== "3" &&
     currentTile !== "4" &&
-    currentTile !== "b" &&
-    currentTile !== "l" &&
-    currentTile !== "j"
+    currentTile !== "bomb" &&
+    currentTile !== "blast" &&
+    currentTile !== "speed"
   ) {
     return false;
   }
@@ -91,11 +91,8 @@ export function plantBomb(player) {
 
   canMoveThroughBomb = true;
 
-  const bombPositionX = Math.round(playerLeft / tileSize) * tileSize;
-  const bombPositionY = Math.round(playerTop / tileSize) * tileSize;
-
-  let explosionTileY = bombPositionY / tileSize - 1;
-  let explosionTileX = bombPositionX / tileSize;
+  let explosionTileY =  Math.round(playerTop / tileSize) - 1;
+  let explosionTileX =  Math.round(playerLeft / tileSize)
 
   let currentTile = LevelMap[explosionTileY][explosionTileX];
   if (currentTile !== "explosion" && currentTile !== "!") {

@@ -102,8 +102,7 @@ export function characterCollision(x, y) {
     LevelMap[characterTileY1][characterTileX2] !== "!" &&
     LevelMap[characterTileY2][characterTileX1] !== "!" &&
     LevelMap[characterTileY2][characterTileX2] !== "!"
-  )
-    setCanMoveThroughBomb(false);
+  ) setCanMoveThroughBomb(false);
 
   // Check if any of the character's four corners is on a collision tile
   for (let i = characterTileY1; i <= characterTileY2; i++) {
@@ -111,46 +110,46 @@ export function characterCollision(x, y) {
       let currentTile = LevelMap[i][j];
       if (canMoveThroughBomb && currentTile === "!") {
         continue;
-      } else if (
-        currentTile !== "_" &&
-        currentTile !== "1" &&
-        currentTile !== "2" &&
-        currentTile !== "3" &&
-        currentTile !== "4" &&
-        currentTile !== "explosion" &&
-        currentTile !== "bomb" &&
-        currentTile !== "blast" &&
-        currentTile !== "speed"
-      ) {
-        return false;
-      } else if (currentTile === "explosion") {
-        loseLife();
-      } else if (currentTile === "bomb") {
-        playerData.bombs += 1;
-        changeTile(j, i, "_");
-        sendEvent("request_changeTile", {
-          playerId: parseInt(localStorage.getItem("Player")),
-          TileX: j,
-          TileY: i,
-        });
-      } else if (currentTile === "blast") {
-        playerData.blastRange += 1;
-        changeTile(j, i, "_");
-        sendEvent("request_changeTile", {
-          playerId: parseInt(localStorage.getItem("Player")),
-          TileX: j,
-          TileY: i,
-        });
-      } else if (currentTile === "speed") {
-        playerData.speed += 1;
-        changeTile(j, i, "_");
-        sendEvent("request_changeTile", {
-          PlayerId: parseInt(localStorage.getItem("Player")),
-          TileX: j,
-          TileY: i,
-        });
       }
+
+      if (!isValidCollisionTile(currentTile)) {
+        return false;
+      }
+
+      handleCollisionTile(currentTile, j, i);
     }
   }
+
   return true;
+}
+
+function isValidCollisionTile(currentTile) {
+  const nonBlockingTiles = ["_", "1", "2", "3", "4", "explosion", "bomb", "blast", "speed"];
+  return nonBlockingTiles.includes(currentTile);
+}
+
+function handleCollisionTile(currentTile, x, y) {
+  switch (currentTile) {
+    case "explosion":
+      loseLife();
+      break;
+    case "bomb":
+      playerData.bombs += 1;
+      break;
+    case "blast":
+      playerData.blastRange += 1;
+      break;
+    case "speed":
+      playerData.speed += 1;
+      break;
+  }
+
+  if (["bomb", "blast", "speed"].includes(currentTile)) {
+    changeTile(x, y, "_");
+    sendEvent("request_changeTile", {
+      playerId: parseInt(localStorage.getItem("Player")),
+      TileX: x,
+      TileY: y,
+    });
+  }
 }

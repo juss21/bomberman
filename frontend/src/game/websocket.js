@@ -9,6 +9,17 @@ export class Event {
     this.payload = payload;
   }
 }
+
+
+const eventHandlers = {
+  "playerId": handlePlayerId,
+  "max-slots": handleMaxSlots,
+  "update_gamestate_players": handleUpdateGameStatePlayers,
+  "currentlevel": handleCurrentLevel,
+  "new_bomb": handleNewBomb,
+  "changeTile": handleChangeTile
+};
+
 export function startWebSocketConnction() {
   return new Promise((resolve, reject) => {
     if (window["WebSocket"]) {
@@ -31,37 +42,9 @@ export function startWebSocketConnction() {
         console.log("WS Message received!");
         const message = JSON.parse(event.data);
 
-        console.log("ws:message:received ->", message);
-
-        if (message.type === "playerId") {
-          const playerId = message.payload;
-
-          console.log("Server has set us as player:", `Player-${playerId}`);
-
-          localStorage.setItem("Player", playerId);
-          sendEvent("request_map", {
-            playerId: playerId,
-          });
-        } else if (message.type === "max-slots") {
-          console.log("Lobby is full!");
-        } else if (message.type === "update_gamestate_players") {
-          const payload = message.payload;
-          updateGameState_player(
-            payload.PlayerId,
-            payload.PlayerNewX,
-            payload.PlayerNewY
-          );
-        } else if (message.type === "currentlevel") {
-          const payload = message.payload;
-          drawTiles(payload);
-        } else if (message.type === "new_bomb") {
-          const payload = message.payload;
-          spawnBomb(payload.PlayerId, payload.BombX, payload.BombY);
-        } else if (message.type === "changeTile") {
-          const payload = message.payload;
-          console.log("new bomb information:", payload);
-
-          changeTile(payload.TileX, payload.TileY, "_");
+        const handler = eventHandlers[message.type];
+        if (handler) {
+          handler(message.payload);
         }
       };
 
@@ -78,4 +61,39 @@ export function startWebSocketConnction() {
 export function sendEvent(type, payload) {
   const event = new Event(type, payload);
   window.socket.send(JSON.stringify(event));
+}
+
+
+function handlePlayerId(payload) {
+  const playerId = payload;
+
+  console.log("Server has set us as player:", `Player-${playerId}`);
+
+  localStorage.setItem("Player", playerId);
+  sendEvent("request_map", {
+    playerId: playerId,
+  });
+}
+
+function handleMaxSlots() {
+  console.log("Lobby is full!");
+}
+
+function handleUpdateGameStatePlayers(payload) {
+  const { PlayerId, PlayerNewX, PlayerNewY } = payload;
+  updateGameState_player(PlayerId, PlayerNewX, PlayerNewY);
+}
+
+function handleCurrentLevel(payload) {
+  drawTiles(payload);
+}
+
+function handleNewBomb(payload) {
+  const { PlayerId, BombX, BombY } = payload;
+  spawnBomb(PlayerId, BombX, BombY);
+}
+
+function handleChangeTile(payload) {
+  console.log("new bomb information:", payload);
+  changeTile(payload.TileX, payload.TileY, "_");
 }
