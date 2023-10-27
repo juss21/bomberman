@@ -1,9 +1,10 @@
-import { backendHost } from "../index.js";
+import { backendHost, lobbyMenu } from "../index.js";
 import { changeTile, drawTiles } from "./board.js";
 import { spawnBomb } from "./bombphysics.js";
 import { CreateHtmlLayout } from "./game.js";
 import { fillGameState_player, updateGameState_player } from "./gameState.js";
 import { gameLoop, playerMovement } from "./loop.js";
+import { PlayingAs, YourName } from "./overlay.js";
 export class Event {
   constructor(type, payload) {
     this.type = type;
@@ -70,7 +71,10 @@ function handlePlayerId(payload) {
     playerId: playerId,
   });
 
+  // sendEvent("update_lobby_players");
+
   fillGameState_player();
+  CreateHtmlLayout();
 }
 
 function handleMaxSlots() {
@@ -82,10 +86,23 @@ function handleUpdateGameStatePlayers(payload) {
   updateGameState_player(PlayerId, GameState);
 }
 
-function handleCurrentLevel(payload) {
+function handleCurrentLevel(map) {
+  // map received!
+  // lobbyMenu();
+  const menu = document.getElementById("menu");
+  menu.innerHTML = "";
+  menu.hidden = true;
+
+  // do the waiting here
+
+  // start game
+
   playerMovement(); // start listening for player movements
   gameLoop(); // start the game loop
-  drawTiles(payload);
+  drawTiles(map);
+  // fill overlay info
+  YourName();
+  PlayingAs();
 }
 
 function handleNewBomb(payload) {

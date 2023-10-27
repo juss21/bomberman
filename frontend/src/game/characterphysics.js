@@ -1,6 +1,6 @@
 import { tileSize, characterSize, changeTile, LevelMap } from "./board.js";
 
-import { refreshRate, updateLifeCounter } from "./overlay.js";
+import { refreshRate, updatePlayerLifeCounter } from "./overlay.js";
 import {
   plantBomb,
   setCanMoveThroughBomb,
@@ -10,19 +10,17 @@ import { sendEvent } from "./websocket.js";
 import { gameState, updatePlayerCoordinates } from "./gameState.js";
 let animationId = null;
 const keysPressed = {};
-let translateX = 0;
-let translateY = 0;
 
 export function movePlayer(event) {
   const playerId = parseInt(localStorage.getItem("Player"));
+
   if (gameState.players[playerId - 1].Lives < 1) return;
   if (!playerId || playerId === 0 || playerId > 4) {
     console.log("PlayerId has not been given, please restart your game!");
     return;
   }
-  const player = document.getElementById(`Player-${playerId}`);
-  let left = parseInt(player.style.left);
-  let top = parseInt(player.style.top);
+
+  const player = document.getElementById(`Player-${playerId}`); // for movement
 
   if (event.key === " " && gameState.players[playerId - 1].Bombs > 0) {
     plantBomb(player, playerId);
@@ -36,29 +34,41 @@ export function movePlayer(event) {
   function moveAnimation() {
     const speed = (gameState.players[playerId - 1].Speed * 60) / refreshRate;
 
-    // Calculate new translations based on key presses
+    // Calculate new positions based on key presses
+    let newLeft = parseInt(player.style.left) || 0;
+    let newTop = parseInt(player.style.top) || 0;
+
     if (keysPressed["W"] || keysPressed["w"] || keysPressed["ArrowUp"]) {
-      if (characterCollision(left + translateX, top + translateY - speed)) {
-        translateY = translateY - speed;
+      if (!characterCollision(newLeft, newTop - speed)) {
+        newTop -= speed;
       }
     }
     if (keysPressed["A"] || keysPressed["a"] || keysPressed["ArrowLeft"]) {
-      if (characterCollision(left + translateX - speed, top + translateY)) {
-        translateX = translateX - speed;
+      if (!characterCollision(newLeft - speed, newTop)) {
+        newLeft -= speed;
       }
     }
     if (keysPressed["S"] || keysPressed["s"] || keysPressed["ArrowDown"]) {
-      if (characterCollision(left + translateX, top + translateY + speed)) {
-        translateY = translateY + speed;
+      if (!characterCollision(newLeft, newTop + speed)) {
+        newTop += speed;
       }
     }
     if (keysPressed["D"] || keysPressed["d"] || keysPressed["ArrowRight"]) {
-      if (characterCollision(left + translateX + speed, top + translateY)) {
-        translateX = translateX + speed;
+      if (!characterCollision(newLeft + speed, newTop)) {
+        newLeft += speed;
       }
     }
-    updatePlayerCoordinates(playerId, translateX, translateY);
-    player.style.transform = `translate(${translateX}px, ${translateY}px)`;
+
+    // Check collision before updating the player's position
+    // let collisionDetected = characterCollision(newLeft, newTop);
+
+    // if (!collisionDetected) {
+    player.style.left = `${newLeft}px`;
+    player.style.top = `${newTop}px`;
+    // }
+
+    updatePlayerCoordinates(playerId, newLeft, newTop);
+
     if (animationId !== null) {
       sendEvent("send_gamestate_upgrade", {
         PlayerId: playerId,
@@ -74,7 +84,9 @@ export function moveOtherPlayer(playerId, X, Y) {
   if (parseInt(localStorage.getItem("Player")) !== playerId) {
     const player = document.getElementById(`Player-${playerId}`);
     if (player) {
-      player.style.transform = `translate(${X}px, ${Y}px)`;
+      player.style.left = X;
+      player.style.top = Y;
+      // player.style.transform = `translate(${X}px, ${Y}px)`;
     }
   }
 }
@@ -108,19 +120,20 @@ export function characterCollision(x, y) {
   for (let i = characterTileY1; i <= characterTileY2; i++) {
     for (let j = characterTileX1; j <= characterTileX2; j++) {
       let currentTile = LevelMap[i][j];
+
       if (canMoveThroughBomb && currentTile === "!") {
         continue;
       }
 
       if (!isValidCollisionTile(currentTile)) {
-        return false;
+        return true; // can pass through
       }
 
       handleCollisionTile(currentTile, j, i);
     }
   }
 
-  return true;
+  return false; // collision detected
 }
 
 function isValidCollisionTile(currentTile) {
@@ -186,5 +199,5 @@ export function loseLife(playerId) {
     if (player) players.removeChild(player);
   }
 
-  updateLifeCounter();
+  updatePlayerLifeCounter(playerId + 1);
 }

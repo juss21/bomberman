@@ -2,11 +2,150 @@ html,
 body {
   margin: 0;
   padding: 0;
+  user-select: none;
+  background-color: black;
+  color: white;
+}
+.CenteredText {
+  text-align: center;
+}
+
+#app {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  flex-direction: row;
+}
+
+.playground {
+  display: flex;
+  width: auto;
 }
 
 .playArea {
   width: calc(60px * 15);
   height: calc(60px * 13);
+  background-color: yellow; /*replace with menu background*/
+}
+
+.gameMenu {
+  position: absolute;
+  width: 100%;
+  height: calc(100%);
+  background-image: url("/src/game/sprites/mainMenu.png");
+}
+
+.menuButtons {
+  position: absolute;
+  left: 50%;
+  top: 35%;
+  transform: translateX(-50%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Align children items (menuButton) in the center horizontally */
+}
+
+.menuButton {
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  border-radius: 10px;
+
+  padding: 10px 10px;
+  color: black;
+  background-color: darkgoldenrod;
+
+  margin-bottom: 10px;
+}
+
+.menuButton:hover {
+  background-color: gray;
+  color: white;
+}
+
+#nameInput {
+  margin-bottom: 10px;
+}
+
+#overlay {
+  display: flex;
+  flex: 3;
+  width: 100px;
+  flex-direction: column;
+  background-color: black;
+}
+
+.overlay-info {
+  position: inherit;
+  width: 100%;
+}
+
+.overlay_all_players {
+  flex: 1;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.overlay_playerInfo {
+  text-align: center;
+  flex: 100;
+  height: 100px;
+  width: 100%;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+#playerInfo-1 {
+  background-color: darkred;
+}
+#playerInfo-2 {
+  background-color: darkblue;
+}
+#playerInfo-3 {
+  background-color: darkgoldenrod;
+}
+#playerInfo-4 {
+  background-color: darkgreen;
+}
+#fps {
+  width: 100%;
+  text-align: center;
+  color: limegreen;
+}
+#your_name {
+  text-align: center;
+}
+#playing_as {
+  text-align: center;
+}
+#lives {
+  text-align: center;
+}
+
+#overlay-player1 {
+  width: 100%;
+  height: 100px;
+  background-color: red;
+}
+
+#overlay-player2 {
+  width: 100%;
+  height: 100px;
+  background-color: blue;
+}
+
+#overlay-player3 {
+  width: 100%;
+  height: 100px;
+  background-color: yellow;
+}
+
+#overlay-player4 {
+  width: 100%;
+  height: 100px;
+  background-color: greenyellow;
 }
 
 .tile-map {
@@ -26,18 +165,133 @@ body {
   background-size: cover;
 }
 
-#Player-1 {
+#Player-1,
+#PlayerImg-1 {
+  background-size: cover;
   background-image: url("game/sprites/players/1.png");
 }
 
-#Player-2 {
+#Player-2,
+#PlayerImg-2 {
+  background-size: cover;
   background-image: url("game/sprites/players/2.png");
 }
 
-#Player-3 {
+#Player-3,
+#PlayerImg-3 {
+  background-size: cover;
   background-image: url("game/sprites/players/3.png");
 }
 
-#Player-4 {
+#Player-4,
+#PlayerImg-4 {
+  background-size: cover;
   background-image: url("game/sprites/players/4.png");
+}
+
+#lives-1,
+#name-1,
+.playerId-1 {
+  color: red;
+}
+
+#lives-2,
+#name-2,
+.playerId-2 {
+  color: blue;
+}
+#lives-3,
+#name-3,
+.playerId-3 {
+  color: yellow;
+}
+#lives-4,
+#name-4,
+.playerId-4 {
+  color: lime;
+}
+#PlayerImg-1,
+#PlayerImg-2,
+#PlayerImg-3,
+#PlayerImg-4,
+.alive {
+  filter: brightness(100%);
+}
+
+/*lobby*/
+.lobbyContainer {
+  position: inherit;
+  width: 100%;
+  height: 100%;
+}
+
+.lobbyPlayers {
+  position: absolute;
+  bottom: 50%;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.lobbyPlayer.connected {
+  filter: brightness(100%);
+}
+
+.lobbyPlayer.notConnected {
+  filter: brightness(25%);
+}
+
+.lobbyPlayer {
+  display: flex;
+  flex: 1;
+  width: 100px;
+  height: 100px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.lobbyPlayerName {
+  color: white;
+}
+
+.lobbyPlayerName #you {
+  color: yellow;
+}
+
+.lobbyPlayerName #other {
+  color: white;
+}
+
+.lobbyChatContainer {
+  position: absolute;
+  background-color: red;
+  margin-left: 10%;
+  margin-right: 10%;
+  width: 80%;
+  height: 300px;
+  bottom: 25px;
+}
+
+.chat-input {
+  width: 100%;
+  bottom: 0;
+}
+
+.chat-log {
+  background-color: gray;
+  height: 300px;
+}
+
+.chat-log-message {
+  width: 100%;
+  background-color: lightgray;
+}
+
+.chat-log-message #localUser {
+  color: blue;
+}
+
+.chat-log-message #otherUser {
+  color: white;
 }

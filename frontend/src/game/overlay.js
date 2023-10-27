@@ -24,8 +24,36 @@ export function frameRate(frameTimes) {
   document.getElementById("fps").innerHTML = "FPS: " + fps;
 }
 
-export function updateLifeCounter() {
-  document.getElementById("lives").innerHTML = `Lives: ${
-    gameState.players[parseInt(localStorage.getItem("Player")) - 1].Lives
-  }`;
+export function YourName() {
+  const localPlayer = parseInt(localStorage.getItem("Player"));
+
+  const element = document.getElementById("your_name");
+  element.innerHTML = localStorage.getItem("PlayerName");
+  element.className = `playerId-${localPlayer}`;
+}
+
+export function PlayingAs() {
+  const localPlayer = parseInt(localStorage.getItem("Player"));
+
+  const element = document.getElementById("playing_as");
+  element.innerHTML = `Player-${localPlayer}`;
+  element.className = `playerId-${localPlayer}`;
+}
+
+export function Lives(localPlayer) {
+  const element = document.getElementById("lives");
+  element.innerHTML = `Lives: ${gameState.players[localPlayer - 1].Lives}`;
+  element.className = `playerId-${localPlayer}`;
+}
+
+export function updatePlayerLifeCounter(playerId) {
+  console.log("updating player lives:", playerId);
+  const localPlayer = parseInt(localStorage.getItem("Player"));
+  if (playerId === localPlayer) {
+    Lives(localPlayer);
+  }
+
+  const element = document.getElementById(`lives-${playerId}`);
+  element.innerHTML = `Lives: ${gameState.players[playerId - 1].Lives}`;
+  element.className = `playerInfoBox-lives playerId-${playerId}`;
 }
