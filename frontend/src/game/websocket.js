@@ -1,25 +1,11 @@
-import { backendHost, lobbyMenu } from "../index.js";
-import { changeTile, drawTiles } from "./board.js";
-import { spawnBomb } from "./bombphysics.js";
-import { CreateHtmlLayout } from "./game.js";
-import { fillGameState_player, updateGameState_player } from "./gameState.js";
-import { gameLoop, playerMovement } from "./loop.js";
-import { PlayingAs, YourName } from "./overlay.js";
+import { backendHost } from "../index.js";
+import { eventHandlers } from "./wsMessageEvents.js";
 export class Event {
   constructor(type, payload) {
     this.type = type;
     this.payload = payload;
   }
 }
-
-const eventHandlers = {
-  playerId: handlePlayerId,
-  "max-slots": handleMaxSlots,
-  update_gamestate_players: handleUpdateGameStatePlayers,
-  currentlevel: handleCurrentLevel,
-  new_bomb: handleNewBomb,
-  changeTile: handleChangeTile,
-};
 
 export function startWebSocketConnction() {
   return new Promise((resolve, reject) => {
@@ -28,12 +14,12 @@ export function startWebSocketConnction() {
 
       ws.onopen = () => {
         console.log("WebSocket Connection established!");
-        sendEvent("request_playerid");
-        resolve(ws); // Resolve the promise with the WebSocket object when the connection is established.
+        sendEvent("request_playerid"); // request a lobby position / playerid from backend
+        resolve(ws);
       };
       ws.onclose = (e) => {
         console.log("WebSocket connection Lost! Is the server running?", e);
-        location.reload();
+        location.reload(); // refresh page
         resolve(e);
       };
       ws.onmessage = (event) => {
@@ -56,60 +42,11 @@ export function startWebSocketConnction() {
   });
 }
 export function sendEvent(type, payload) {
-  const event = new Event(type, payload);
-  window.socket.send(JSON.stringify(event));
-}
-
-function handlePlayerId(payload) {
-  const playerId = payload;
-
-  console.log("Server has set us as player:", `Player-${playerId}`);
-
-  localStorage.setItem("Player", playerId);
-
-  sendEvent("request_map", {
-    playerId: playerId,
-  });
-
-  // sendEvent("update_lobby_players");
-
-  fillGameState_player();
-  CreateHtmlLayout();
-}
-
-function handleMaxSlots() {
-  console.log("Lobby is full!");
-}
-
-function handleUpdateGameStatePlayers(payload) {
-  const { PlayerId, GameState } = payload;
-  updateGameState_player(PlayerId, GameState);
-}
-
-function handleCurrentLevel(map) {
-  // map received!
-  // lobbyMenu();
-  const menu = document.getElementById("menu");
-  menu.innerHTML = "";
-  menu.hidden = true;
-
-  // do the waiting here
-
-  // start game
-
-  playerMovement(); // start listening for player movements
-  gameLoop(); // start the game loop
-  drawTiles(map);
-  // fill overlay info
-  YourName();
-  PlayingAs();
-}
-
-function handleNewBomb(payload) {
-  const { PlayerId, BombX, BombY } = payload;
-  spawnBomb(PlayerId, BombX, BombY);
-}
-
-function handleChangeTile(payload) {
-  changeTile(payload.TileX, payload.TileY, "_");
+  // only if has active ws connection
+  if (window.socket) {
+    const event = new Event(type, payload);
+    window.socket.send(JSON.stringify(event));
+  } else {
+    console.log("WebSocket not connected, skipping event:", type);
+  }
 }

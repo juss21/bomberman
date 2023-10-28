@@ -1,6 +1,5 @@
 import { Player1, Player2, Player3, Player4 } from "./board.js";
 import { moveOtherPlayer } from "./characterphysics.js";
-import { CreateHtmlLayout } from "./game.js";
 // current state of game
 export const gameState = {
   players: [], //players
@@ -65,7 +64,4 @@ export function fillGameState_player() {
   if (p2) gameState.players.push(p2);
   if (p3) gameState.players.push(p3);
   if (p4) gameState.players.push(p4);
-
-  console.log("gamestate:", gameState);
-  CreateHtmlLayout(gameState);
 }

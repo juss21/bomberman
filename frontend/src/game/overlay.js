@@ -1,4 +1,6 @@
+import { removeAllEventListeners } from "../../dist/framework.js";
 import { setFrameCapping } from "../index.js";
+import { toggleMenuHide } from "./createHtml.js";
 import { gameState } from "./gameState.js";
 
 export let refreshRate = 60;
@@ -40,17 +42,25 @@ export function PlayingAs() {
   element.className = `playerId-${localPlayer}`;
 }
 
-export function Lives(localPlayer) {
+export function Lives() {
+  const localPlayer = parseInt(localStorage.getItem("Player"));
+
   const element = document.getElementById("lives");
   element.innerHTML = `Lives: ${gameState.players[localPlayer - 1].Lives}`;
   element.className = `playerId-${localPlayer}`;
+
+  if (gameState.players[localPlayer - 1].Lives === 0) {
+    toggleMenuHide();
+    document.getElementById("lobbyCountDown").innerHTML =
+      "You died! Better luck next time!";
+  }
 }
 
 export function updatePlayerLifeCounter(playerId) {
   console.log("updating player lives:", playerId);
   const localPlayer = parseInt(localStorage.getItem("Player"));
   if (playerId === localPlayer) {
-    Lives(localPlayer);
+    Lives();
   }
 
   const element = document.getElementById(`lives-${playerId}`);

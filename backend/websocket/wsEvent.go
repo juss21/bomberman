@@ -20,6 +20,10 @@ func (m *wsManager) setupEventHandlers() {
 
 	m.handlers["request_playerid"] = NewPlayer
 
+	/*lobby events*/
+	m.handlers["update_lobby"] = LobbyUpdate
+	m.handlers["send_message"] = SendMessage
+
 	/*other events*/
 	m.handlers["bomb_placed"] = PlaceBomb
 	m.handlers["request_changeTile"] = ChangeTile

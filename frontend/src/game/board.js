@@ -46,10 +46,11 @@ function fetchCoordinates(map) {
     }
   }
 
-  console.log("coordinates for player1:", Player1);
-  console.log("coordinates for player2:", Player2);
-  console.log("coordinates for player3:", Player3);
-  console.log("coordinates for player4:", Player4);
+  // for debugging
+  // console.log("coordinates for player1:", Player1);
+  // console.log("coordinates for player2:", Player2);
+  // console.log("coordinates for player3:", Player3);
+  // console.log("coordinates for player4:", Player4);
 }
 
 function createPlayer(Player = 1) {
@@ -105,12 +106,4 @@ export function changeTile(explosionTileX, explosionTileY, newTile) {
   console.log("bombsmpawn:", explosionTileX, explosionTileY, newTile);
   img.src = `src/game/sprites/level0${1}/${newTile}.png`;
   LevelMap[explosionTileY][explosionTileX] = newTile;
-}
-
-export function addRandomPowerUp() {
-  let powerups = ["bomb", "blast", "speed"];
-  if (Math.random() < 0.2) {
-    let randomIndex = Math.floor(Math.random() * powerups.length);
-    return powerups[randomIndex];
-  } else return "_";
 }

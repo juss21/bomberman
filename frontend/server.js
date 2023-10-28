@@ -19,6 +19,7 @@ const server = http.createServer((req, res) => {
 
   fs.readFile(filePath, (err, content) => {
     if (err) {
+      console.log(`Requested file: ${filePath}`);
       console.log("err:", err);
       res.writeHead(404, { "Content-Type": "text/html" });
       res.end("404 Not Found");
@@ -35,8 +36,6 @@ server.listen(port, () => {
 });
 
 function getContentType(filePath) {
-  console.log(`Requested file: ${filePath}`);
-
   const extname = path.extname(filePath);
   switch (extname) {
     case ".js":
