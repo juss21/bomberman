@@ -23,7 +23,11 @@ export function movePlayer(event) {
   const player = document.getElementById(`Player-${playerId}`); // for movement
 
   if (event.key === " " && gameState.players[playerId - 1].Bombs > 0) {
-    plantBomb(player, playerId);
+
+    const currentPosition = player.style.transform || 'translate(0px, 0px)';
+    var [, currentLeft, currentTop] = currentPosition.match(/translate\(([^,]+)px, ([^)]+)px\)/).map(parseFloat);
+
+    plantBomb(player, playerId, currentLeft, currentTop);
     return;
   }
 
@@ -34,40 +38,37 @@ export function movePlayer(event) {
   function moveAnimation() {
     const speed = (gameState.players[playerId - 1].Speed * 60) / refreshRate;
 
-    // Calculate new positions based on key presses
-    let newLeft = parseInt(player.style.left) || 0;
-    let newTop = parseInt(player.style.top) || 0;
+    // Calculate current positions based on key presses
+    const currentPosition = player.style.transform || 'translate(0px, 0px)';
+    var [, currentLeft, currentTop] = currentPosition.match(/translate\(([^,]+)px, ([^)]+)px\)/).map(parseFloat);
+
+    let left = parseInt(player.style.left);
+    let top = parseInt(player.style.top);
 
     if (keysPressed["W"] || keysPressed["w"] || keysPressed["ArrowUp"]) {
-      if (!characterCollision(newLeft, newTop - speed)) {
-        newTop -= speed;
+      if (!characterCollision(currentLeft + left, top + currentTop - speed)) {
+        currentTop -= speed;
       }
     }
     if (keysPressed["A"] || keysPressed["a"] || keysPressed["ArrowLeft"]) {
-      if (!characterCollision(newLeft - speed, newTop)) {
-        newLeft -= speed;
+      if (!characterCollision(left + currentLeft - speed, top + currentTop)) {
+        currentLeft -= speed;
       }
     }
     if (keysPressed["S"] || keysPressed["s"] || keysPressed["ArrowDown"]) {
-      if (!characterCollision(newLeft, newTop + speed)) {
-        newTop += speed;
+      if (!characterCollision(left + currentLeft, top + currentTop + speed)) {
+        currentTop += speed;
       }
     }
     if (keysPressed["D"] || keysPressed["d"] || keysPressed["ArrowRight"]) {
-      if (!characterCollision(newLeft + speed, newTop)) {
-        newLeft += speed;
+      if (!characterCollision(left + currentLeft + speed, top + currentTop)) {
+        currentLeft += speed;
       }
     }
 
-    // Check collision before updating the player's position
-    // let collisionDetected = characterCollision(newLeft, newTop);
+    player.style.transform = `translate(${currentLeft}px, ${currentTop}px)`
 
-    // if (!collisionDetected) {
-    player.style.left = `${newLeft}px`;
-    player.style.top = `${newTop}px`;
-    // }
-
-    updatePlayerCoordinates(playerId, newLeft, newTop);
+    updatePlayerCoordinates(playerId, currentLeft, currentTop);
 
     if (animationId !== null) {
       sendEvent("send_gamestate_upgrade", {
@@ -84,9 +85,7 @@ export function moveOtherPlayer(playerId, X, Y) {
   if (parseInt(localStorage.getItem("Player")) !== playerId) {
     const player = document.getElementById(`Player-${playerId}`);
     if (player) {
-      player.style.left = X;
-      player.style.top = Y;
-      // player.style.transform = `translate(${X}px, ${Y}px)`;
+      player.style.transform = `translate(${X}px, ${Y}px)`
     }
   }
 }
@@ -155,7 +154,11 @@ function handleCollisionTile(currentTile, x, y) {
   const playerId = parseInt(localStorage.getItem("Player"));
   switch (currentTile) {
     case "explosion":
-      loseLife(playerId - 1);
+      if (!gameState.players[playerId - 1].Invincible) {
+        sendEvent("update_lives", {
+          PlayerId: playerId - 1,
+        });
+      }
       break;
     case "bomb":
       gameState.players[playerId - 1].Bombs += 1;
@@ -164,7 +167,7 @@ function handleCollisionTile(currentTile, x, y) {
       gameState.players[playerId - 1].BlastRange += 1;
       break;
     case "speed":
-      gameState.players[playerId - 1].Speed += 1;
+      if (gameState.players[playerId - 1].Speed < 6) gameState.players[playerId - 1].Speed += 1;
       break;
   }
 
@@ -178,7 +181,9 @@ function handleCollisionTile(currentTile, x, y) {
   }
 }
 
-export function loseLife(playerId) {
+export function loseLife(payload) {
+  const playerId = payload.PlayerId
+
   console.log("Player:", playerId, "just lost a life!");
   if (!gameState.players[playerId].Invincible) {
     gameState.players[playerId].Lives -= 1;

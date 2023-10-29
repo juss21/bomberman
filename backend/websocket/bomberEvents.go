@@ -19,6 +19,22 @@ func NewPlayer(event Event, c *Client) error {
 	return nil
 }
 
+func UpdateLives(event Event, c *Client) error {
+
+	type Request struct {
+		PlayerId int `json:"PlayerId"`
+	}
+
+	var payload Request
+	if err := json.Unmarshal(event.Payload, &payload); err != nil {
+		return fmt.Errorf("bad payload in request: %v", err)
+	}
+	for client := range c.client.clients {
+		SendResponse(payload, "update_lives", client)
+	}
+	return nil
+}
+
 func PlaceBomb(event Event, c *Client) error {
 	type Request struct {
 		PlayerId int `json:"PlayerId"`

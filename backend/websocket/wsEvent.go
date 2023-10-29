@@ -19,6 +19,8 @@ func (m *wsManager) setupEventHandlers() {
 	m.handlers["send_gamestate_upgrade"] = UpdatePlayerGameState
 
 	m.handlers["request_playerid"] = NewPlayer
+	
+	m.handlers["update_lives"] = UpdateLives
 
 	/*lobby events*/
 	m.handlers["update_lobby"] = LobbyUpdate

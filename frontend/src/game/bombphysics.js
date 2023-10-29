@@ -1,5 +1,4 @@
 import { changeTile, tileSize, characterSize, LevelMap } from "./board.js";
-import { loseLife } from "./characterphysics.js";
 import { gameState } from "./gameState.js";
 import { sendEvent } from "./websocket.js";
 
@@ -19,21 +18,27 @@ function createExplosion(x, y, currentTile) {
   const playerId = parseInt(localStorage.getItem("Player"));
   const player = document.getElementById(`Player-${playerId}`);
   if (player) {
-    let playerLeft =
-      parseInt(player.style.left) + gameState.players[playerId - 1].X;
-    let playerTop =
-      parseInt(player.style.top) + gameState.players[playerId - 1].Y;
-    console.log(playerTop, playerLeft, y, x);
 
+    if (parseInt(player.style.left) === gameState.players[playerId - 1].X && parseInt(player.style.top) + gameState.players[playerId - 1].Y) {
+      gameState.players[playerId - 1].X = 0
+      gameState.players[playerId - 1].Y = 0
+    }
+
+    let playerLeft = parseInt(player.style.left) + gameState.players[playerId - 1].X;
+    let playerTop = parseInt(player.style.top) + gameState.players[playerId - 1].Y;
+    console.log(player.style.left, player.style.top, gameState.players[playerId - 1].X, gameState.players[playerId - 1].Y)
     let characterTileX1 = Math.floor(playerLeft / tileSize);
     let characterTileY1 = Math.floor(playerTop / tileSize);
     let characterTileX2 = Math.floor((characterSize + playerLeft) / tileSize);
     let characterTileY2 = Math.floor((characterSize + playerTop) / tileSize);
     if (
-      (characterTileX1 === xTile && characterTileY1 === yTile) ||
-      (characterTileX2 === xTile && characterTileY2 === yTile)
+      ((characterTileX1 === xTile && characterTileY1 === yTile) ||
+      (characterTileX2 === xTile && characterTileY2 === yTile)) &&
+      !gameState.players[playerId - 1].Invincible
     ) {
-      loseLife(playerId - 1);
+      sendEvent("update_lives", {
+        PlayerId: playerId-1,
+      });
     }
   }
 
@@ -84,11 +89,11 @@ function explosionCollision(x, y, playerId) {
   return true;
 }
 
-export function plantBomb(player, playerId) {
+export function plantBomb(player, playerId, currentTranslateX, currentTranslateY) {
   canMoveThroughBomb = true;
 
-  let explosionTileX = Math.round(parseInt(player.style.left) / tileSize);
-  let explosionTileY = Math.round(parseInt(player.style.top) / tileSize);
+  let explosionTileX = Math.round((parseInt(player.style.left) + currentTranslateX) / tileSize);
+  let explosionTileY = Math.round((parseInt(player.style.top) + currentTranslateY) / tileSize);
 
   let currentTile = LevelMap[explosionTileY][explosionTileX];
   if (currentTile !== "explosion" && currentTile !== "!") {

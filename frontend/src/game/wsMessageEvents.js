@@ -6,6 +6,7 @@ import { YourName, Lives, PlayingAs } from "./overlay.js";
 import { updateChatBox } from "./chat.js";
 import { updateGameState_player } from "./gameState.js";
 import { spawnBomb } from "./bombphysics.js";
+import { loseLife } from "./characterphysics.js";
 export const eventHandlers = {
   playerId: onConnection,
   "max-slots": onBadConnection,
@@ -16,6 +17,7 @@ export const eventHandlers = {
   update_gamestate_players: handleUpdateGameStatePlayers,
   new_bomb: handleNewBomb,
   changeTile: handleChangeTile,
+  update_lives: loseLife
 };
 
 function onConnection(payload) {
@@ -40,7 +42,7 @@ function onNewMapLayout(map) {
 
   lobbyMenu();
 
-  let waitTime = 35; // initial wait time in seconds
+  let waitTime = 1; // initial wait time in seconds
   const lobbyCountDown = document.getElementById("lobbyCountDown");
   const CountDownMessage = (time) => {
     return `Game will begin in ${time} seconds!`;

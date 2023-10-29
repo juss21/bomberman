@@ -2,12 +2,6 @@
 
 ### todo
 
-- > elud
-
-  - kui oled plahvatamise hetkel blasti sees siis -1 elu ei saa
-  - teistele ei saa damage teha pommiga
-  - kui keegi elu kaotab tuleks uuendada websocketiga miskit
-  - damage hitbox on veider
 
 - > lobby
 
@@ -19,17 +13,7 @@
   - kui mäng algab, kuvada ainult playereid kes websocketiga ühendatud on!
 
 - > overlay
-
-  - ilmselt teiste mängijate elud ei uuendu
   - kui player sureb (0 elu) siis panna ta containerile filter blur vms?
-
-- > Movement
-
-  - tuleks asjad tagasi tõlkida transformi, (ainult movement?) -> Are layers being promoted properly? audit küsimus
-  - või siis lihtsalt math.round speedile panna?
-
-- > muu:
-  - asjade ülese korjamine veits bugine, eriti suure movement speediga (kõnnid mööda == saad powerupi pmst)
 
 #### Audit questions:
 
