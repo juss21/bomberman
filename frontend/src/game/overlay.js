@@ -1,5 +1,3 @@
-import { removeAllEventListeners } from "../../dist/framework.js";
-import { setFrameCapping } from "../index.js";
 import { toggleMenuHide } from "./createHtml.js";
 import { gameState } from "./gameState.js";
 
@@ -15,13 +13,6 @@ export function frameRate(frameTimes) {
     frameTimes.length > 30
       ? frameTimes.length.toString()
       : frameTimes.length.toString();
-  /* if (fps > 62) {
-    console.log(
-      fps,
-      "Your refresh rate is too high, your frame rate is capped for this session!"
-    );
-    setFrameCapping(1000 / 72);
-  }*/
   if (parseInt(fps) > 60) refreshRate = parseInt(fps) - 1;
   document.getElementById("fps").innerHTML = "FPS: " + fps;
 }

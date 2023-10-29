@@ -26,7 +26,7 @@ function createExplosion(x, y, currentTile) {
 
     let playerLeft = parseInt(player.style.left) + gameState.players[playerId - 1].X;
     let playerTop = parseInt(player.style.top) + gameState.players[playerId - 1].Y;
-    console.log(player.style.left, player.style.top, gameState.players[playerId - 1].X, gameState.players[playerId - 1].Y)
+
     let characterTileX1 = Math.floor(playerLeft / tileSize);
     let characterTileY1 = Math.floor(playerTop / tileSize);
     let characterTileX2 = Math.floor((characterSize + playerLeft) / tileSize);

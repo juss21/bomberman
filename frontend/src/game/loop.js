@@ -1,8 +1,6 @@
 import { addEventListenerToElement } from "../../dist/framework.js";
 import { frameRate } from "./overlay.js";
 import { movePlayer, stopAnimation } from "./characterphysics.js";
-import { sendEvent } from "./websocket.js";
-import { Player1, Player2, Player3, Player4 } from "./board.js";
 
 /* frame limattion */
 let animationFrameId = null;

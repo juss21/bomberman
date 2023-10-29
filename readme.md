@@ -15,6 +15,7 @@
 - > overlay
   - kui player sureb (0 elu) siis panna ta containerile filter blur vms?
 
+
 #### Audit questions:
 
 - https://github.com/01-edu/public/tree/master/subjects/bomberman-dom/audit

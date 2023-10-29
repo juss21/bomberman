@@ -42,7 +42,7 @@ function onNewMapLayout(map) {
 
   lobbyMenu();
 
-  let waitTime = 1; // initial wait time in seconds
+  let waitTime = 10; // initial wait time in seconds
   const lobbyCountDown = document.getElementById("lobbyCountDown");
   const CountDownMessage = (time) => {
     return `Game will begin in ${time} seconds!`;
@@ -51,6 +51,7 @@ function onNewMapLayout(map) {
 
   let countdownInterval = setInterval(function () {
     waitTime--;
+    gameLoop(); // viskasin selle siia, muidu alguses arvutab movement speedi valesti
     if (waitTime < 30) {
       lobbyCountDown.innerHTML = CountDownMessage(waitTime);
       console.log("Waiting for " + waitTime + " seconds...");
@@ -64,7 +65,7 @@ function onNewMapLayout(map) {
       drawTiles(map); // render map
 
       playerMovement(); // start listening for player movements
-      gameLoop(); // start the game loop
+      //gameLoop(); // start the game loop
 
       // fill overlay info
       YourName();
