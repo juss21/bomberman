@@ -30,6 +30,8 @@ func (m *wsManager) setupEventHandlers() {
 	/*other events*/
 	m.handlers["bomb_placed"] = PlaceBomb
 	m.handlers["request_changeTile"] = ChangeTile
+	m.handlers["game_started"] = GameStarted
+	m.handlers["game_ended"] = GameEnded
 }
 func SendResponse(responseData any, event string, c *Client) {
 	response, err := json.Marshal(responseData)

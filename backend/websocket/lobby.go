@@ -5,7 +5,9 @@ import (
 	"fmt"
 )
 
-var waitTime = 60 // Default wait time (in seconds)
+var waitTime = 60   // Default wait time (in seconds)
+var waitTime2p = 5  // wait time when 2 players connected
+var waitTime4p = 10 // wait time when 4 players connected
 
 func SendMessage(event Event, c *Client) error {
 	type Request struct {
@@ -64,6 +66,8 @@ func LobbyJoin(event Event, c *Client) error {
 		if gameInProgress {
 			errorMessage = "There is game already ongoing. Please wait."
 		}
+		ResetGame() // check whether game could be reset
+
 		// if failed to join lobby then:
 		SendResponse(errorMessage, "lobby-full", c)
 	}
@@ -148,9 +152,9 @@ func LobbyUpdate(event Event, c *Client) error {
 
 func LobbyStartCountdown(PlayerCount int) (int, error) {
 	if (PlayerCount == 2 || PlayerCount == 3) && waitTime > 30 {
-		waitTime = 30
+		waitTime = waitTime2p
 	} else if PlayerCount == 4 && waitTime > 10 {
-		waitTime = 10
+		waitTime = waitTime4p
 	} else if PlayerCount == 1 || PlayerCount == 0 {
 		waitTime = 10000
 	}

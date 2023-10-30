@@ -54,11 +54,6 @@ export function movePlayer(event) {
     var currentLeft = transformMatrix.m41 || 0;
     var currentTop = transformMatrix.m42 || 0;
 
-    // const currentPosition = player.style.transform || "translate(0px, 0px)";
-    // var [, currentLeft, currentTop] = currentPosition
-    //   .match(/translate\(([^,]+)px, ([^)]+)px\)/)
-    //   .map(parseFloat);
-
     let left = parseInt(player.style.left);
     let top = parseInt(player.style.top);
 
@@ -199,6 +194,17 @@ function handleCollisionTile(currentTile, x, y) {
   }
 }
 
+function alivePlayers() {
+  let count = 0;
+  for (let i = 0; i < gameState.players.length; i++) {
+    if (gameState.players[i].Lives > 0 && gameState.players[i].Connected) {
+      count++;
+    }
+  }
+  console.log("alive players:", count);
+  return count;
+}
+
 export function loseLife(payload) {
   const playerId = payload.PlayerId;
 
@@ -207,8 +213,6 @@ export function loseLife(payload) {
     gameState.players[playerId].Lives -= 1;
     gameState.players[playerId].Invincible = true;
     let player = document.getElementById(`Player-${playerId + 1}`);
-    // let livesCounter = document.getElementById("lives");
-    // livesCounter.innerHTML = "Lives: " + gameState.players[playerId].Lives;
     player.style.opacity = 0.5;
     const explosionDuration = 2000;
     setTimeout(() => {
@@ -217,9 +221,21 @@ export function loseLife(payload) {
     }, explosionDuration);
   }
   if (gameState.players[playerId].Lives <= 0) {
+    gameState.players[playerId].Connected = false; // set the connected status false
+
     let players = document.getElementById("players");
     let player = document.getElementById(`Player-${playerId + 1}`);
     if (player) players.removeChild(player);
+    // if last player dies
+    if (alivePlayers() <= 1) {
+      console.log(parseInt(localStorage.getItem("Player")) - 1, playerId);
+      if (parseInt(localStorage.getItem("Player")) - 1 != playerId) {
+        console.error("you win!");
+        location.href = "/#/win"; // set href mention to /win
+        sendEvent("game_ended");
+        window.socket.close(); // close ws connection
+      }
+    }
   }
 
   updatePlayerLifeCounter(playerId);

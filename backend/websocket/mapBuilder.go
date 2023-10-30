@@ -14,6 +14,11 @@ type LevelMap struct {
 
 var levelMap LevelMap
 
+func ResetMap() {
+	var emptyMap LevelMap
+	levelMap = emptyMap
+}
+
 func RandomizeMap(level LevelMap) LevelMap {
 	rand.Seed(time.Now().UnixNano()) // Seed the random number generator with current time
 

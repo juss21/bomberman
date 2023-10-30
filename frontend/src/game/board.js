@@ -1,5 +1,5 @@
 import { append, createElement } from "../../dist/framework.js";
-import { fillGameState_player } from "./gameState.js";
+import { gameState } from "./gameState.js";
 // 15x13 tiles (60px each)
 export const tileSize = 60; // 60px
 export const characterSize = 48;
@@ -58,17 +58,37 @@ function fetchCoordinates(map) {
   // console.log("coordinates for player4:", Player4);
 }
 
-function createPlayer(Player = 1) {
-  if (Player.X === 0 && Player.Y === 0) return;
+function createPlayer(PlayerId = 1) {
+  let player;
+
+  switch (PlayerId) {
+    case 1:
+      player = Player1;
+      break;
+    case 2:
+      player = Player2;
+      break;
+    case 3:
+      player = Player3;
+      break;
+    case 4:
+      player = Player4;
+      break;
+    default:
+      player = Player1;
+  }
+
+  if (player.X === 0 && player.Y === 0) return; // Skip players with invalid coordinates
 
   const parent = document.getElementById("players");
 
-  const player = createElement("div", {
-    id: `Player-${Player.ID}`,
+  const playerElement = createElement("div", {
+    id: `Player-${player.ID}`,
     class: "PlayerSprite",
-    style: `left:${Player.X}px;top:${Player.Y}px`,
+    style: `left:${player.X}px;top:${player.Y}px`,
   });
-  append(parent, player);
+
+  append(parent, playerElement);
 }
 
 export function drawTiles(map, currentLevel = 1) {
@@ -80,11 +100,11 @@ export function drawTiles(map, currentLevel = 1) {
 
   const mapDiv = createElement("div", { class: "tile-map", id: "tile-map" });
   fetchCoordinates(boardMap);
-  createPlayer(Player1);
-  createPlayer(Player2);
-  createPlayer(Player3);
-  createPlayer(Player4);
-  fillGameState_player();
+  for (let i = 0; i < gameState.players.length; i++) {
+    if (gameState.players[i].Connected) {
+      createPlayer(i + 1);
+    }
+  }
 
   for (let i = 0; i < boardMap.length; i++) {
     const mapRow = createElement("div", { class: "tile-row", id: "tile" + i });

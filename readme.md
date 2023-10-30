@@ -2,19 +2,15 @@
 
 ### todo
 
-- > lobby
+- > KUI KEEGI mängust leaveb siis teda ei saa mõrvata!
 
-  - kui keegi leave paneb siis muuta ta "Connected" status -> "notConnected"
-  - lobbyga saab joinida kui mäng käib => ära keelata (gameInProgess) boolean on tehtud, mis tuleks pm lihtsalt true ja falseks sättida
+- > bomb explosion on vahest bugine (vahest läheb lolliks kui mitu tükki panna) -> EI MIDAGI KRIITILIST?
 
-- > game
-- kui mäng algab, kuvada ainult playereid kes websocketiga ühendatud on(mängijad kes mängus on), teistele remove või hidden!
+- > lobby - kui keegi leave paneb siis muuta ta "Connected" status -> "notConnected"
 
-- > end scene
-- kui võidad/kaotad visata tagasi main menu / teha resa location.reset() vms, võidu puhul võiks visata mingi popup "palju õnne" vms
+- > overlay - mängu alguses võiks ära tuvastada/blurrida inimesed kes ei mängi
 
-- > singleplayer
-- üldse eemaldada või siis panna tühi kaart (mängijateta) renderdama
+- > end scene - back to the menu nuppu vajutades viskab hetkeks errori, see oleks vaja korda teha
 
 ### About
 

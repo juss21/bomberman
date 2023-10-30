@@ -70,6 +70,8 @@ func (m *wsManager) removeClient(client *Client) {
 			levelMap.Map = nil // reset generated map
 		}
 		RemovePlayer(client.playerId) // once player disconnects make the spot "available"
+		ResetGame()                   // reset game if (game is finished)
+
 		client.connection.Close()
 		delete(m.clients, client)
 	}

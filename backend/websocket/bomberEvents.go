@@ -73,3 +73,16 @@ func ChangeTile(event Event, c *Client) error {
 
 	return nil
 }
+
+func GameStarted(event Event, c *Client) error {
+	gameInProgress = true
+
+	return nil
+}
+
+func GameEnded(event Event, c *Client) error {
+	gameInProgress = false
+	waitTime = 60
+	ResetMap()
+	return nil
+}

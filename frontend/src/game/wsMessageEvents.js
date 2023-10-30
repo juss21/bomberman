@@ -2,7 +2,7 @@ import { lobbyMenu } from "./createHtml.js";
 import { sendEvent } from "./websocket.js";
 import { changeTile, setLevelMap } from "./board.js";
 import { updateChatBox } from "./chat.js";
-import { updateGameState_player } from "./gameState.js";
+import { gameState, updateGameState_player } from "./gameState.js";
 import { spawnBomb } from "./bombphysics.js";
 import { loseLife } from "./characterphysics.js";
 import { RenderGame } from "./game.js";
@@ -26,6 +26,8 @@ function onConnection(payload) {
 
   localStorage.setItem("Player", PlayerId);
 
+  // on connection ->  set gamestate connection status to true
+
   setLevelMap(CurrentLevel);
 
   lobbyMenu();
@@ -33,9 +35,8 @@ function onConnection(payload) {
   sendEvent("update_lobby", { PlayerId: PlayerId }); // send update message to other users
 }
 
-function onBadConnection() {
-  console.log("Lobby is full!");
-  alert("Lobby is full, please try again later!");
+function onBadConnection(payload) {
+  alert(payload);
 }
 
 function onLobbyUpdate(payload) {
@@ -45,6 +46,8 @@ function onLobbyUpdate(payload) {
     const element = document.getElementById(`Player-${Players[i].PlayerId}`);
     element.className = "lobbyPlayer Connected";
 
+    gameState.players[i].Connected = true;
+
     const element2 = document.getElementById(
       `lobby-slot-${Players[i].PlayerId}`
     );
@@ -53,7 +56,7 @@ function onLobbyUpdate(payload) {
   }
 }
 
-var WaitTime = 0;
+var WaitTime = 1000;
 var countdownInterval;
 function lobbyTimeLeft(payload) {
   const { Players, TimeLeft } = payload;
@@ -78,6 +81,7 @@ function lobbyTimeLeft(payload) {
       if (WaitTime <= 0) {
         clearInterval(countdownInterval); // clear the interval when countdown reaches 0
         RenderGame();
+        WaitTime = 1000;
       }
     }, 1000);
   }

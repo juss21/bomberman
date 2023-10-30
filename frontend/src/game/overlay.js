@@ -44,9 +44,11 @@ export function Lives(id) {
   if (gameState.players[id - 1].Lives === 0) {
     console.log("deathscreen:!");
 
-    toggleMenuHide();
-    document.getElementById("lobbyCountDown").innerHTML =
-      "You died! Better luck next time!";
+    console.error("oh no, you died!");
+    location.href = "/#/lose"; // set href mention to /win
+    window.socket.close();
+    // document.getElementById("lobbyCountDown").innerHTML =
+    //   "You died! Better luck next time!";
   }
 }
 

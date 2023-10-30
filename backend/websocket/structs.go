@@ -10,6 +10,8 @@ type gsPlayer struct {
 	Y          int // player-Y coord
 	Lives      int // player-lives
 	Bombs      int // amount of bombs player can place
-	BlastRange int // bomb explosion radius
 	Speed      int // player speed
+	BlastRange int // bomb explosion radius
+	Invincible bool
+	Connected  bool // player connected status
 }

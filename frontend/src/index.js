@@ -8,7 +8,7 @@ import {
   Router,
   addEventListenerToElement,
 } from "../dist/framework.js";
-import { gameMenu } from "./game/createHtml.js";
+import { gameMenu, outcomeScreen } from "./game/createHtml.js";
 import { preload } from "./preload.js";
 
 loadCSS("./src/index.css");
@@ -24,16 +24,19 @@ export const setFrameCapping = (value) => {
   frameCapping = value;
 };
 
-function render() {
-  gameMenu(app); // return a game menu
-}
-
 // Initial rendering
 /* ROUTING */
 const routes = {
   "/": () => {
-    render();
+    gameMenu(app); // return a game menu
+  },
+  "#/win": () => {
+    outcomeScreen(app, "win");
+  },
+  "#/lose": () => {
+    outcomeScreen(app, "lose");
   },
 };
 
-new Router(routes);
+const routerInstance = new Router(routes);
+routerInstance.handleRouteChange(window.location.hash);

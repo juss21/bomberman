@@ -1,22 +1,25 @@
 import { LevelMap, drawTiles } from "./board.js";
 import { createGameHTML, toggleMenuHide } from "./createHtml.js";
+import { fillGameState_player } from "./gameState.js";
 import { gameLoop, playerMovement } from "./loop.js";
 import { Lives, PlayingAs, YourName } from "./overlay.js";
-import { startWebSocketConnction } from "./websocket.js";
+import { sendEvent, startWebSocketConnction } from "./websocket.js";
 
 export function StartGame(offline, playerName = "Player1") {
   if (offline) {
-    console.log("game started.");
+    console.log("single player game started.");
 
     // offline (endless gamemode) play, must fetch map from backend!
   } else {
     console.log("lobby entered.");
     localStorage.setItem("PlayerName", playerName);
+    fillGameState_player(); // fill gamestate object, with default player values
     startWebSocketConnction(); // set up a websocket connection
   }
 }
 
 export function RenderGame() {
+  sendEvent("game_started");
   gameLoop(); // viskasin selle siia, muidu alguses arvutab movement speedi valesti
 
   const localPlayer = parseInt(localStorage.getItem("Player"));

@@ -21,7 +21,7 @@ export function startWebSocketConnction() {
       };
       ws.onclose = (e) => {
         console.log("WebSocket connection Lost! Is the server running?", e);
-        location.reload(); // refresh page
+        // location.reload(); // refresh page
         resolve(e);
       };
       ws.onmessage = (event) => {

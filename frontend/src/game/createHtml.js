@@ -138,7 +138,7 @@ function menuHtml() {
     });
 
     let button2 = createElement("button", {
-      innerHTML: "Multiplayer",
+      innerHTML: "Join lobby", //"Multiplayer",
       class: "menuButton",
     });
 
@@ -149,9 +149,10 @@ function menuHtml() {
       required: true,
     });
 
-    append(menuButtons, button1);
-    append(menuButtons, multiplayerName);
+    // append(menuButtons, button1);
     append(menuButtons, button2);
+
+    append(menuButtons, multiplayerName);
     append(menu, menuButtons);
 
     addEventListenerToElement(button1, "click", () => {
@@ -299,4 +300,36 @@ export function toggleMenuHide(forceHidden = false) {
   } else {
     element.hidden = true;
   }
+}
+
+export function outcomeScreen(app, type = "win") {
+  console.log("rendering win");
+
+  const playGround = document.getElementById("playground");
+  if (!playGround) window.location.href = "/";
+
+  const menu = createElement("div", { class: "gameMenu", id: "menu" });
+
+  const menuBtns = createElement("div", { class: "menuButtons" });
+  const mainMenuButton = createElement("button", {
+    innerHTML: "Return to the main menu!",
+    class: "menuButton",
+  });
+  addEventListenerToElement(mainMenuButton, "click", () => {
+    location.reload(); // refresh page
+  });
+
+  append(menuBtns, mainMenuButton);
+
+  const message =
+    type === "win"
+      ? `You won the game, congratulations!`
+      : "You Died... Better luck next time!";
+  const MessageElement = createElement("div", {
+    class: "lobbyCountDown",
+    innerHTML: message,
+  });
+  append(menuBtns, MessageElement);
+  append(menu, menuBtns);
+  append(playGround, menu);
 }
