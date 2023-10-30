@@ -3,7 +3,7 @@ import { moveOtherPlayer } from "./characterphysics.js";
 // current state of game
 export const gameState = {
   players: [], //players
-  chat: [], //chat log
+  // chat: [], //chat log
 };
 
 export function updatePlayerCoordinates(playerId, newX, newY) {

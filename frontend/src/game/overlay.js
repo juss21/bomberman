@@ -33,14 +33,17 @@ export function PlayingAs() {
   element.className = `playerId-${localPlayer}`;
 }
 
-export function Lives() {
-  const localPlayer = parseInt(localStorage.getItem("Player"));
-
+export function Lives(id) {
   const element = document.getElementById("lives");
-  element.innerHTML = `Lives: ${gameState.players[localPlayer - 1].Lives}`;
-  element.className = `playerId-${localPlayer}`;
+  element.innerHTML = `Lives: ${gameState.players[id - 1].Lives}`;
+  element.className = `playerId-${id}`;
 
-  if (gameState.players[localPlayer - 1].Lives === 0) {
+  console.log("new lives of:", `player-${id - 1}`);
+  console.log(":", gameState.players[id - 1].Lives);
+
+  if (gameState.players[id - 1].Lives === 0) {
+    console.log("deathscreen:!");
+
     toggleMenuHide();
     document.getElementById("lobbyCountDown").innerHTML =
       "You died! Better luck next time!";
@@ -50,11 +53,24 @@ export function Lives() {
 export function updatePlayerLifeCounter(playerId) {
   console.log("updating player lives:", playerId);
   const localPlayer = parseInt(localStorage.getItem("Player"));
-  if (playerId === localPlayer) {
-    Lives();
+  if (playerId + 1 === localPlayer) {
+    Lives(localPlayer); // update for local
   }
 
-  const element = document.getElementById(`lives-${playerId}`);
-  element.innerHTML = `Lives: ${gameState.players[playerId - 1].Lives}`;
+  // update for statistics'
+  console.log("updating stats");
+  const element = document.getElementById(`lives-${playerId + 1}`);
+  console.log("element", element);
+  element.innerHTML = `Lives: ${gameState.players[playerId].Lives}`;
   element.className = `playerInfoBox-lives playerId-${playerId}`;
+
+  // blur filter
+  if (gameState.players[playerId].Lives === 0) {
+    const element = document.getElementById(
+      `playerInfoContainer-${playerId + 1}`
+    );
+
+    element.style.filter = "blur(5px)"; // You can adjust the blur radius (5px in this case) according to your preference
+    console.log(element, "died!");
+  }
 }

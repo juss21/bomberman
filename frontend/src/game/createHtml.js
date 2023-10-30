@@ -71,7 +71,10 @@ export function gameMenu(app) {
     append(infoBox, infoPlayingAs);
 
     // create player_lives info
-    const lives = createElement("div", { id: "lives", innerHTML: `Lives: 3` });
+    const lives = createElement("div", {
+      id: "lives",
+      innerHTML: `Lives: 3`,
+    });
     append(infoBox, lives);
 
     append(overlay, infoBox);

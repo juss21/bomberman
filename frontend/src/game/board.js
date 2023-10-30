@@ -12,6 +12,11 @@ export let Player3 = { X: 0, Y: 0, ID: 3 };
 export let Player4 = { X: 0, Y: 0, ID: 4 };
 
 export let LevelMap = [[]];
+
+export function setLevelMap(newMap) {
+  LevelMap = newMap;
+}
+
 function resetCoords() {
   Player1.X = 0;
   Player1.Y = 0;

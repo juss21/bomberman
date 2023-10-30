@@ -23,9 +23,10 @@ export function movePlayer(event) {
   const player = document.getElementById(`Player-${playerId}`); // for movement
 
   if (event.key === " " && gameState.players[playerId - 1].Bombs > 0) {
-
-    const currentPosition = player.style.transform || 'translate(0px, 0px)';
-    var [, currentLeft, currentTop] = currentPosition.match(/translate\(([^,]+)px, ([^)]+)px\)/).map(parseFloat);
+    const currentPosition = player.style.transform || "translate(0px, 0px)";
+    var [, currentLeft, currentTop] = currentPosition
+      .match(/translate\(([^,]+)px, ([^)]+)px\)/)
+      .map(parseFloat);
 
     plantBomb(player, playerId, currentLeft, currentTop);
     return;
@@ -39,8 +40,10 @@ export function movePlayer(event) {
     const speed = (gameState.players[playerId - 1].Speed * 60) / refreshRate;
 
     // Calculate current positions based on key presses
-    const currentPosition = player.style.transform || 'translate(0px, 0px)';
-    var [, currentLeft, currentTop] = currentPosition.match(/translate\(([^,]+)px, ([^)]+)px\)/).map(parseFloat);
+    const currentPosition = player.style.transform || "translate(0px, 0px)";
+    var [, currentLeft, currentTop] = currentPosition
+      .match(/translate\(([^,]+)px, ([^)]+)px\)/)
+      .map(parseFloat);
 
     let left = parseInt(player.style.left);
     let top = parseInt(player.style.top);
@@ -66,7 +69,7 @@ export function movePlayer(event) {
       }
     }
 
-    player.style.transform = `translate(${currentLeft}px, ${currentTop}px)`
+    player.style.transform = `translate(${currentLeft}px, ${currentTop}px)`;
 
     updatePlayerCoordinates(playerId, currentLeft, currentTop);
 
@@ -85,7 +88,7 @@ export function moveOtherPlayer(playerId, X, Y) {
   if (parseInt(localStorage.getItem("Player")) !== playerId) {
     const player = document.getElementById(`Player-${playerId}`);
     if (player) {
-      player.style.transform = `translate(${X}px, ${Y}px)`
+      player.style.transform = `translate(${X}px, ${Y}px)`;
     }
   }
 }
@@ -167,7 +170,8 @@ function handleCollisionTile(currentTile, x, y) {
       gameState.players[playerId - 1].BlastRange += 1;
       break;
     case "speed":
-      if (gameState.players[playerId - 1].Speed < 6) gameState.players[playerId - 1].Speed += 1;
+      if (gameState.players[playerId - 1].Speed < 6)
+        gameState.players[playerId - 1].Speed += 1;
       break;
   }
 
@@ -182,15 +186,15 @@ function handleCollisionTile(currentTile, x, y) {
 }
 
 export function loseLife(payload) {
-  const playerId = payload.PlayerId
+  const playerId = payload.PlayerId;
 
-  console.log("Player:", playerId, "just lost a life!");
+  console.log("Player:", playerId + 1, "just lost a life!");
   if (!gameState.players[playerId].Invincible) {
     gameState.players[playerId].Lives -= 1;
     gameState.players[playerId].Invincible = true;
     let player = document.getElementById(`Player-${playerId + 1}`);
-    let livesCounter = document.getElementById("lives");
-    livesCounter.innerHTML = "Lives: " + gameState.players[playerId].Lives;
+    // let livesCounter = document.getElementById("lives");
+    // livesCounter.innerHTML = "Lives: " + gameState.players[playerId].Lives;
     player.style.opacity = 0.5;
     const explosionDuration = 2000;
     setTimeout(() => {
@@ -204,5 +208,5 @@ export function loseLife(payload) {
     if (player) players.removeChild(player);
   }
 
-  updatePlayerLifeCounter(playerId + 1);
+  updatePlayerLifeCounter(playerId);
 }

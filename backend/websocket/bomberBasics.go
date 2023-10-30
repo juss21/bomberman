@@ -19,7 +19,7 @@ func CreatePlayers() {
 
 func GeneratePlayerID() int {
 
-	for i, _ := range Players {
+	for i := range Players {
 		if Players[i].Taken {
 			continue
 		}
@@ -31,7 +31,7 @@ func GeneratePlayerID() int {
 }
 
 func RemovePlayer(ID int) {
-	for i, _ := range Players {
+	for i := range Players {
 		if Players[i].ID == ID {
 			Players[i].Taken = false
 			return

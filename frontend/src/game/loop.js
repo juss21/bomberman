@@ -4,9 +4,9 @@ import { movePlayer, stopAnimation } from "./characterphysics.js";
 
 /* frame limattion */
 let animationFrameId = null;
-const targetFrameRate = 60;
+// const targetFrameRate = 60;
 let frameTimes = [];
-const frameDuration = 1000 / targetFrameRate;
+// const frameDuration = 1000 / targetFrameRate;
 
 /* game loop  */
 export function gameLoop() {

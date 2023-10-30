@@ -14,7 +14,9 @@ export function startWebSocketConnction() {
 
       ws.onopen = () => {
         console.log("WebSocket Connection established!");
-        sendEvent("request_playerid"); // request a lobby position / playerid from backend
+        sendEvent("join_lobby", {
+          PlayerName: localStorage.getItem("PlayerName"),
+        }); // request a lobby position / join lobby
         resolve(ws);
       };
       ws.onclose = (e) => {

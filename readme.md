@@ -2,19 +2,30 @@
 
 ### todo
 
-
 - > lobby
 
-  - lobbyga ei saa joinida kui => kohad on täis või kui gameInProgess == true
-  - uuendada player1-2-3-4 slotte, kui koht on täis muuta (notConnected -> Connected) ja (lobby-slot-X.innerhtml=playername)
-  - countdown timer vastavalt palju inimesi on lobbys 1: (sina ainult) waitTime 6000 vms, 2-3: countDown 30 sek, 4: countdown <=10
-  - counter uuendama iga 10 sek tagant kui counter <= 10 siis iga sekund
-  - countdown teha backendis hoopis?
-  - kui mäng algab, kuvada ainult playereid kes websocketiga ühendatud on!
+  - kui keegi leave paneb siis muuta ta "Connected" status -> "notConnected"
+  - lobbyga saab joinida kui mäng käib => ära keelata (gameInProgess) boolean on tehtud, mis tuleks pm lihtsalt true ja falseks sättida
 
-- > overlay
-  - kui player sureb (0 elu) siis panna ta containerile filter blur vms?
+- > game
+- kui mäng algab, kuvada ainult playereid kes websocketiga ühendatud on(mängijad kes mängus on), teistele remove või hidden!
 
+- > end scene
+- kui võidad/kaotad visata tagasi main menu / teha resa location.reset() vms, võidu puhul võiks visata mingi popup "palju õnne" vms
+
+- > bugid
+- firefoxis liikumine katki?
+
+- > singleplayer
+- üldse eemaldada või siis panna tühi kaart (mängijateta) renderdama
+
+### About
+
+Welcome to our bomberman game, this is a simple multiplayer game written in Javascript & Golang
+
+#### Our game:
+
+- only supports one active multiplayer game
 
 #### Audit questions:
 

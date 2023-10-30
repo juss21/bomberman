@@ -5,20 +5,6 @@ import (
 	"fmt"
 )
 
-func NewPlayer(event Event, c *Client) error {
-
-	playerId := GeneratePlayerID()
-	// send playerid for our bomberman game
-	if playerId != -1 {
-		c.playerId = playerId
-		SendResponse(playerId, "playerId", c)
-	} else {
-		SendResponse(playerId, "max-slots", c)
-	}
-
-	return nil
-}
-
 func UpdateLives(event Event, c *Client) error {
 
 	type Request struct {
@@ -29,6 +15,7 @@ func UpdateLives(event Event, c *Client) error {
 	if err := json.Unmarshal(event.Payload, &payload); err != nil {
 		return fmt.Errorf("bad payload in request: %v", err)
 	}
+
 	for client := range c.client.clients {
 		SendResponse(payload, "update_lives", client)
 	}

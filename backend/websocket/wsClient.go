@@ -20,6 +20,7 @@ type Client struct {
 	connection *websocket.Conn
 	client     *wsManager
 	playerId   int
+	playerName string
 	// unbuffered channel, to prevent connection getting too many connections
 	egress chan Event // avoid concurrent writes on the websocket connection
 }

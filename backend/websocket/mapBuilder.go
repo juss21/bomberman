@@ -1,7 +1,6 @@
 package ws
 
 import (
-	"encoding/json"
 	"fmt"
 	"math/rand"
 	"os"
@@ -53,12 +52,12 @@ func RandomizeMap(level LevelMap) LevelMap {
 	return modifiedMap
 }
 
-func ReadMapFile(mapName string, c *Client) (LevelMap, error) {
+func ReadMapFile(mapName string) (LevelMap, error) {
 	// a map has already been created
 	if levelMap.Map != nil {
 		return levelMap, nil
 	}
-	fmt.Println("levelmap has no data:", levelMap.Map)
+	fmt.Println("levelmap has no data:", levelMap.Map, "generating one...")
 
 	url := "backend/websocket/maps/" + mapName + ".txt" // tilemap_singleplayer || tilemap_multiplayer
 	mapData, err := os.ReadFile(url)
@@ -77,31 +76,10 @@ func ReadMapFile(mapName string, c *Client) (LevelMap, error) {
 	return levelMap, nil
 }
 
-func GenerateMap(event Event, c *Client) error {
-	type Request struct {
-		PlayerId int `json:"PlayerId"`
-	}
+func GenerateMap() (tileMap LevelMap, err error) {
 
-	var payload Request
-	if err := json.Unmarshal(event.Payload, &payload); err != nil {
-		return fmt.Errorf("bad payload in request: %v", err)
-	}
+	tileMap, err = ReadMapFile("tilemap_multiplayer")
+	// SendResponse(tilemap, "currentlevel", c)
 
-	// if singleplayer
-	if payload.PlayerId == 0 {
-		tilemap, err := ReadMapFile("tilemap_singleplayer", c)
-		if err != nil {
-			return err
-		}
-		SendResponse(tilemap.Map, "currentlevel", c)
-	} else {
-		tilemap, err := ReadMapFile("tilemap_multiplayer", c)
-		if err != nil {
-			return err
-		}
-
-		SendResponse(tilemap, "currentlevel", c)
-	}
-
-	return nil
+	return tileMap, err
 }

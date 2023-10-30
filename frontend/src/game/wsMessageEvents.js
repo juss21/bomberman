@@ -1,35 +1,36 @@
-import { createGameHTML, lobbyMenu, toggleMenuHide } from "./createHtml.js";
+import { lobbyMenu } from "./createHtml.js";
 import { sendEvent } from "./websocket.js";
-import { playerMovement, gameLoop } from "./loop.js";
-import { changeTile, drawTiles } from "./board.js";
-import { YourName, Lives, PlayingAs } from "./overlay.js";
+import { changeTile, setLevelMap } from "./board.js";
 import { updateChatBox } from "./chat.js";
 import { updateGameState_player } from "./gameState.js";
 import { spawnBomb } from "./bombphysics.js";
 import { loseLife } from "./characterphysics.js";
+import { RenderGame } from "./game.js";
 export const eventHandlers = {
-  playerId: onConnection,
-  "max-slots": onBadConnection,
-  currentlevel: onNewMapLayout,
-
+  "lobby-joined": onConnection,
+  "lobby-full": onBadConnection,
+  "lobby-update": onLobbyUpdate,
+  "lobby-countdown": lobbyTimeLeft,
+  "request-countdown-sync": lobbyCountDownSync,
   update_chatbox: updateChatBox, // add chat message
 
   update_gamestate_players: handleUpdateGameStatePlayers,
   new_bomb: handleNewBomb,
   changeTile: handleChangeTile,
-  update_lives: loseLife
+  update_lives: loseLife,
 };
 
 function onConnection(payload) {
-  const playerId = payload;
-  console.log("Server has set us as player:", `Player-${playerId}`);
+  const { PlayerId, CurrentLevel } = payload;
+  console.log("Server has set us as player:", `Player-${PlayerId}`);
 
-  localStorage.setItem("Player", playerId);
+  localStorage.setItem("Player", PlayerId);
 
-  // requesting current map layout
-  sendEvent("request_map", {
-    playerId: playerId,
-  });
+  setLevelMap(CurrentLevel);
+
+  lobbyMenu();
+
+  sendEvent("update_lobby", { PlayerId: PlayerId }); // send update message to other users
 }
 
 function onBadConnection() {
@@ -37,42 +38,53 @@ function onBadConnection() {
   alert("Lobby is full, please try again later!");
 }
 
-function onNewMapLayout(map) {
-  console.log("currentmap:", map);
+function onLobbyUpdate(payload) {
+  const { Players } = payload;
 
-  lobbyMenu();
+  for (let i = 0; i < Players.length; i++) {
+    const element = document.getElementById(`Player-${Players[i].PlayerId}`);
+    element.className = "lobbyPlayer Connected";
 
-  let waitTime = 10; // initial wait time in seconds
-  const lobbyCountDown = document.getElementById("lobbyCountDown");
-  const CountDownMessage = (time) => {
-    return `Game will begin in ${time} seconds!`;
-  };
-  console.log("Waiting for " + waitTime + " seconds...");
+    const element2 = document.getElementById(
+      `lobby-slot-${Players[i].PlayerId}`
+    );
 
-  let countdownInterval = setInterval(function () {
-    waitTime--;
-    gameLoop(); // viskasin selle siia, muidu alguses arvutab movement speedi valesti
-    if (waitTime < 30) {
-      lobbyCountDown.innerHTML = CountDownMessage(waitTime);
-      console.log("Waiting for " + waitTime + " seconds...");
-    }
-    if (waitTime <= 0) {
-      clearInterval(countdownInterval); // clear the interval when countdown reaches 0
+    element2.innerHTML = Players[i].PlayerName;
+  }
+}
 
-      // start game
-      toggleMenuHide(true); // "hide menu"
-      createGameHTML(); // create tilemap etc html structure
-      drawTiles(map); // render map
+var WaitTime = 0;
+var countdownInterval;
+function lobbyTimeLeft(payload) {
+  const { Players, TimeLeft } = payload;
+  console.log("timeleft:", TimeLeft, payload);
+  WaitTime = TimeLeft;
+  if (typeof WaitTime === "number") {
+    const lobbyCountDown = document.getElementById("lobbyCountDown");
+    const CountDownMessage = (time) => {
+      return `Game will begin in ${time} seconds!`;
+    };
 
-      playerMovement(); // start listening for player movements
-      //gameLoop(); // start the game loop
+    // Clear the previous countdown interval if it exists
+    clearInterval(countdownInterval);
 
-      // fill overlay info
-      YourName();
-      PlayingAs();
-      Lives();
-    }
-  }, 1000);
+    countdownInterval = setInterval(function () {
+      WaitTime--;
+      if (WaitTime < 30) {
+        lobbyCountDown.innerHTML = CountDownMessage(WaitTime);
+        console.log("Waiting for " + WaitTime + " seconds...");
+      }
+
+      if (WaitTime <= 0) {
+        clearInterval(countdownInterval); // clear the interval when countdown reaches 0
+        RenderGame();
+      }
+    }, 1000);
+  }
+}
+
+function lobbyCountDownSync() {
+  sendEvent("send-countdown-sync", { NewTime: WaitTime });
 }
 
 function handleUpdateGameStatePlayers(payload) {
