@@ -23,10 +23,14 @@ export function movePlayer(event) {
   const player = document.getElementById(`Player-${playerId}`); // for movement
 
   if (event.key === " " && gameState.players[playerId - 1].Bombs > 0) {
-    const currentPosition = player.style.transform || "translate(0px, 0px)";
-    var [, currentLeft, currentTop] = currentPosition
-      .match(/translate\(([^,]+)px, ([^)]+)px\)/)
-      .map(parseFloat);
+    const transformStyle = window
+      .getComputedStyle(player)
+      .getPropertyValue("transform");
+    const transformMatrix = new DOMMatrix(transformStyle);
+
+    // Calculate current positions based on key presses
+    var currentLeft = transformMatrix.m41 || 0;
+    var currentTop = transformMatrix.m42 || 0;
 
     plantBomb(player, playerId, currentLeft, currentTop);
     return;
@@ -40,10 +44,20 @@ export function movePlayer(event) {
     const speed = (gameState.players[playerId - 1].Speed * 60) / refreshRate;
 
     // Calculate current positions based on key presses
-    const currentPosition = player.style.transform || "translate(0px, 0px)";
-    var [, currentLeft, currentTop] = currentPosition
-      .match(/translate\(([^,]+)px, ([^)]+)px\)/)
-      .map(parseFloat);
+
+    const transformStyle = window
+      .getComputedStyle(player)
+      .getPropertyValue("transform");
+    const transformMatrix = new DOMMatrix(transformStyle);
+
+    // Calculate current positions based on key presses
+    var currentLeft = transformMatrix.m41 || 0;
+    var currentTop = transformMatrix.m42 || 0;
+
+    // const currentPosition = player.style.transform || "translate(0px, 0px)";
+    // var [, currentLeft, currentTop] = currentPosition
+    //   .match(/translate\(([^,]+)px, ([^)]+)px\)/)
+    //   .map(parseFloat);
 
     let left = parseInt(player.style.left);
     let top = parseInt(player.style.top);

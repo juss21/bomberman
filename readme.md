@@ -13,9 +13,6 @@
 - > end scene
 - kui võidad/kaotad visata tagasi main menu / teha resa location.reset() vms, võidu puhul võiks visata mingi popup "palju õnne" vms
 
-- > bugid
-- firefoxis liikumine katki?
-
 - > singleplayer
 - üldse eemaldada või siis panna tühi kaart (mängijateta) renderdama
 
