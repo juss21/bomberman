@@ -42,11 +42,18 @@ function onBadConnection(payload) {
 function onLobbyUpdate(payload) {
   const { Players } = payload;
 
+  console.log("players:", Players);
+
   for (let i = 0; i < Players.length; i++) {
     const element = document.getElementById(`Player-${Players[i].PlayerId}`);
     element.className = "lobbyPlayer Connected";
 
     gameState.players[i].Connected = true;
+
+    const playerContainerElement = document.getElementById(
+      `playerInfoContainer-${i + 1}`
+    );
+    playerContainerElement.style.filter = "blur(0px)"; // You can adjust the blur radius (5px in this case) according to your preference
 
     const element2 = document.getElementById(
       `lobby-slot-${Players[i].PlayerId}`

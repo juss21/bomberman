@@ -4,13 +4,9 @@
 
 - > KUI KEEGI mängust leaveb siis teda ei saa mõrvata!
 
-- > bomb explosion on vahest bugine (vahest läheb lolliks kui mitu tükki panna) -> EI MIDAGI KRIITILIST?
-
 - > lobby - kui keegi leave paneb siis muuta ta "Connected" status -> "notConnected"
 
-- > overlay - mängu alguses võiks ära tuvastada/blurrida inimesed kes ei mängi
-
-- > end scene - back to the menu nuppu vajutades viskab hetkeks errori, see oleks vaja korda teha
+- > bomb explosion on vahest bugine (vahest läheb lolliks kui mitu tükki panna) -> EI MIDAGI KRIITILIST?
 
 ### About
 

@@ -5,6 +5,7 @@ import {
 } from "../../dist/framework.js";
 import { sendChatMessage } from "./chat.js";
 import { StartGame } from "./game.js";
+import { gameState } from "./gameState.js";
 
 function playerInfoHTMLStructure(app) {
   const parentId = app.id;
@@ -14,6 +15,7 @@ function playerInfoHTMLStructure(app) {
   const child = createElement("div", {
     id: `playerInfoContainer-${playerId}`,
     class: className,
+    style: "filter: blur(5px)",
   });
 
   const name = createElement("div", {
@@ -305,8 +307,22 @@ export function toggleMenuHide(forceHidden = false) {
 export function outcomeScreen(app, type = "win") {
   console.log("rendering win");
 
-  const playGround = document.getElementById("playground");
-  if (!playGround) window.location.href = "/";
+  app.innerHTML = "";
+
+  const playGround = createElement("div", {
+    class: "playground",
+    id: "playground",
+  });
+  append(app, playGround);
+
+  const overlayTemplate = createElement("div", { id: "overlay" });
+  append(playGround, overlayTemplate);
+
+  const playareaTemplate = createElement("div", {
+    class: "playArea",
+    id: "game",
+  });
+  append(playGround, playareaTemplate);
 
   const menu = createElement("div", { class: "gameMenu", id: "menu" });
 
@@ -316,7 +332,8 @@ export function outcomeScreen(app, type = "win") {
     class: "menuButton",
   });
   addEventListenerToElement(mainMenuButton, "click", () => {
-    location.reload(); // refresh page
+    window.location.href = "/";
+    // location.reload(); // refresh page
   });
 
   append(menuBtns, mainMenuButton);

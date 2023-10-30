@@ -60,6 +60,7 @@ export function updateGameState_player(playerID, GameState) {
   gameState.players[PlayerIndex] = GameState;
 
   gameState.players[PlayerIndex].Connected = true; // set the connected status true
+
   const newX = gameState.players[PlayerIndex].X;
   const newY = gameState.players[PlayerIndex].Y;
 
