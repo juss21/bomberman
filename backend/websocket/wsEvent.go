@@ -26,6 +26,7 @@ func (m *wsManager) setupEventHandlers() {
 	m.handlers["update_lobby"] = LobbyUpdate
 	m.handlers["send_message"] = SendMessage
 	m.handlers["send-countdown-sync"] = RequestCountDownTimerSync
+	m.handlers["reset-countdown"] = RequestCountDownTimerReset
 
 	/*other events*/
 	m.handlers["bomb_placed"] = PlaceBomb
@@ -43,4 +44,21 @@ func SendResponse(responseData any, event string, c *Client) {
 	responseEvent.Type = event
 	responseEvent.Payload = response
 	c.egress <- responseEvent
+}
+
+func LostConnection(PlayerId int, c *Client) {
+
+	type Response struct {
+		PlayerId   int
+		PlayerName string
+	}
+	var resp Response
+
+	resp.PlayerId = PlayerId
+	resp.PlayerName = c.playerName
+
+	for client := range c.client.clients {
+		SendResponse(resp, "connection-lost", client)
+	}
+
 }

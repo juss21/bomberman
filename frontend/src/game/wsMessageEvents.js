@@ -1,17 +1,21 @@
 import { lobbyMenu } from "./createHtml.js";
 import { sendEvent } from "./websocket.js";
-import { changeTile, setLevelMap } from "./board.js";
+import { InGame, changeTile, setInGame, setLevelMap } from "./board.js";
 import { updateChatBox } from "./chat.js";
 import { gameState, updateGameState_player } from "./gameState.js";
 import { spawnBomb } from "./bombphysics.js";
 import { loseLife } from "./characterphysics.js";
 import { RenderGame } from "./game.js";
+var WaitTime = 1000;
+var countdownInterval;
+
 export const eventHandlers = {
   "lobby-joined": onConnection,
   "lobby-full": onBadConnection,
   "lobby-update": onLobbyUpdate,
   "lobby-countdown": lobbyTimeLeft,
   "request-countdown-sync": lobbyCountDownSync,
+  "connection-lost": onConnectionLost,
   update_chatbox: updateChatBox, // add chat message
 
   update_gamestate_players: handleUpdateGameStatePlayers,
@@ -38,6 +42,37 @@ function onConnection(payload) {
 function onBadConnection(payload) {
   alert(payload);
 }
+function onConnectionLost(payload) {
+  const { PlayerId, PlayerName } = payload;
+  console.log(`${PlayerName} lost connection (player-${PlayerId})`);
+
+  // setting their connected gameState to false
+  gameState.players[PlayerId - 1].Connected = false;
+  if (InGame) {
+    gameState.players[PlayerId - 1].Lives = 0; // kill them
+
+    sendEvent("update_lives", {
+      PlayerId: PlayerId,
+      Kill: true,
+    });
+  }
+
+  clearInterval(countdownInterval); // clear the interval when countdown reaches 0
+
+  sendEvent("reset-countdown", { WaitTime: WaitTime }); // reset countdown timer?
+
+  // display stuff
+  const PIC = document.getElementById(`playerInfoContainer-${PlayerId}`);
+  if (PIC) {
+    PIC.style.filter = "blur(5px)";
+  }
+
+  const Lslot = document.getElementById(`Player-${PlayerId}`);
+  if (Lslot) {
+    Lslot.className = "lobbyPlayer notConnected";
+    Lslot.innerHTML = "";
+  }
+}
 
 function onLobbyUpdate(payload) {
   const { Players } = payload;
@@ -63,8 +98,6 @@ function onLobbyUpdate(payload) {
   }
 }
 
-var WaitTime = 1000;
-var countdownInterval;
 function lobbyTimeLeft(payload) {
   const { Players, TimeLeft } = payload;
   console.log("timeleft:", TimeLeft, payload);
@@ -85,8 +118,9 @@ function lobbyTimeLeft(payload) {
         console.log("Waiting for " + WaitTime + " seconds...");
       }
 
-      if (WaitTime <= 0) {
+      if (WaitTime <= 0 && Players.length > 1) {
         clearInterval(countdownInterval); // clear the interval when countdown reaches 0
+        setInGame(true);
         RenderGame();
         WaitTime = 1000;
       }

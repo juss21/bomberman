@@ -12,6 +12,11 @@ export let Player3 = { X: 0, Y: 0, ID: 3 };
 export let Player4 = { X: 0, Y: 0, ID: 4 };
 
 export let LevelMap = [[]];
+export let InGame = false;
+
+export const setInGame = (value) => {
+  InGame = value;
+};
 
 export function setLevelMap(newMap) {
   LevelMap = newMap;

@@ -1,4 +1,4 @@
-import { toggleMenuHide } from "./createHtml.js";
+import { setInGame } from "./board.js";
 import { gameState } from "./gameState.js";
 
 export let refreshRate = 60;
@@ -48,7 +48,8 @@ export function Lives(id) {
     console.log("deathscreen:!");
 
     console.error("oh no, you died!");
-    location.href = "/#/lose"; // set href mention to /win
+    setInGame(false);
+    location.href = "/#/lose";
     window.socket.close();
     return true;
     // document.getElementById("lobbyCountDown").innerHTML =

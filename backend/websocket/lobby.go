@@ -3,10 +3,11 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 )
 
 var waitTime = 60   // Default wait time (in seconds)
-var waitTime2p = 5  // wait time when 2 players connected
+var waitTime2p = 20 // wait time when 2 players connected
 var waitTime4p = 10 // wait time when 4 players connected
 
 func SendMessage(event Event, c *Client) error {
@@ -174,4 +175,49 @@ func RequestCountDownTimerSync(event Event, c *Client) error {
 
 	waitTime = payload.NewTime
 	return nil
+}
+
+func RequestCountDownTimerReset(event Event, c *Client) error {
+	type Request struct {
+		WaitTime int `json:"WaitTime"`
+	}
+
+	var payload Request
+	if err := json.Unmarshal(event.Payload, &payload); err != nil {
+		return fmt.Errorf("bad payload in request: %v", err)
+	}
+
+	log.Println("CountDown reset requested: received waittime", payload.WaitTime)
+
+	type ResponsePlayer struct {
+		PlayerId   int
+		PlayerName string
+	}
+
+	type Response struct {
+		Players  []ResponsePlayer
+		TimeLeft int
+	}
+	var resp Response
+
+	// counting all the clients connected to our system
+	for client := range c.client.clients {
+		player := ResponsePlayer{
+			PlayerId:   client.playerId,
+			PlayerName: client.playerName,
+		}
+		resp.Players = append(resp.Players, player)
+	}
+
+	countDown, err := LobbyStartCountdown(len(resp.Players))
+
+	waitTime = countDown
+	resp.TimeLeft = waitTime
+
+	for client := range c.client.clients {
+		SendResponse(resp, "lobby-update", client)
+		SendResponse(resp, "lobby-countdown", client) // sync up countdown timer
+	}
+
+	return err
 }

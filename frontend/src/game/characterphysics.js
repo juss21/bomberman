@@ -1,4 +1,10 @@
-import { tileSize, characterSize, changeTile, LevelMap } from "./board.js";
+import {
+  tileSize,
+  characterSize,
+  changeTile,
+  LevelMap,
+  setInGame,
+} from "./board.js";
 
 import { refreshRate, updatePlayerLifeCounter } from "./overlay.js";
 import {
@@ -207,10 +213,14 @@ function alivePlayers() {
 
 export function loseLife(payload) {
   const playerId = payload.PlayerId;
+  const Kill = payload.Kill;
+  console.log("ayload", payload);
 
-  console.log("Player:", playerId + 1, "just lost a life!");
   if (!gameState.players[playerId].Invincible) {
-    gameState.players[playerId].Lives -= 1;
+    gameState.players[playerId].Lives -= Kill
+      ? gameState.players[playerId].Lives
+      : 1;
+
     gameState.players[playerId].Invincible = true;
     let player = document.getElementById(`Player-${playerId + 1}`);
     player.style.opacity = 0.5;
@@ -220,22 +230,25 @@ export function loseLife(payload) {
       player.style.opacity = 1;
     }, explosionDuration);
   }
+
   if (gameState.players[playerId].Lives <= 0) {
     gameState.players[playerId].Connected = false; // set the connected status false
 
-    let players = document.getElementById("players");
-    let player = document.getElementById(`Player-${playerId + 1}`);
-    if (player) players.removeChild(player);
     // if last player dies
     if (alivePlayers() <= 1) {
       console.log(parseInt(localStorage.getItem("Player")) - 1, playerId);
       if (parseInt(localStorage.getItem("Player")) - 1 != playerId) {
         console.error("you win!");
         location.href = "/#/win"; // set href mention to /win
+        setInGame(false);
         sendEvent("game_ended");
         window.socket.close(); // close ws connection
       }
     }
+
+    let players = document.getElementById("players");
+    let player = document.getElementById(`Player-${playerId + 1}`);
+    if (player) players.removeChild(player);
   }
 
   updatePlayerLifeCounter(playerId);

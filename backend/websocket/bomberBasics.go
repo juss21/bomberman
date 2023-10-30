@@ -48,9 +48,8 @@ func ResetGame() {
 		}
 	}
 
-	fmt.Println("reset playercount:", PlayerCount)
-
 	if PlayerCount == 0 || PlayerCount == 1 {
+		fmt.Println("countdown has been reset:", PlayerCount)
 		waitTime = 60
 		gameInProgress = false
 		ResetMap()

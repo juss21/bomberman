@@ -8,7 +8,8 @@ import (
 func UpdateLives(event Event, c *Client) error {
 
 	type Request struct {
-		PlayerId int `json:"PlayerId"`
+		PlayerId int  `json:"PlayerId"`
+		Kill     bool `json:"Kill"`
 	}
 
 	var payload Request
