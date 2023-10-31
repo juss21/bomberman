@@ -86,7 +86,8 @@ function explosionCollision(x, y, playerId) {
     currentTile !== "4" &&
     currentTile !== "bomb" &&
     currentTile !== "blast" &&
-    currentTile !== "speed"
+    currentTile !== "speed" &&
+    currentTile !== "explosion"
   ) {
     return false;
   }

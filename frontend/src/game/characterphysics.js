@@ -4,6 +4,7 @@ import {
   changeTile,
   LevelMap,
   setInGame,
+  InGame
 } from "./board.js";
 
 import { refreshRate, updatePlayerLifeCounter } from "./overlay.js";
@@ -220,7 +221,7 @@ export function loseLife(payload) {
     gameState.players[playerId].Lives -= Kill
       ? gameState.players[playerId].Lives
       : 1;
-
+      
     gameState.players[playerId].Invincible = true;
     let player = document.getElementById(`Player-${playerId + 1}`);
     player.style.opacity = 0.5;
@@ -232,24 +233,29 @@ export function loseLife(payload) {
   }
 
   if (gameState.players[playerId].Lives <= 0) {
-    gameState.players[playerId].Connected = false; // set the connected status false
+    gameState.players[playerId].Connected = false;
 
     // if last player dies
     if (alivePlayers() <= 1) {
-      console.log(parseInt(localStorage.getItem("Player")) - 1, playerId);
-      if (parseInt(localStorage.getItem("Player")) - 1 != playerId) {
+      const localPlayerId = parseInt(localStorage.getItem("Player")) - 1
+
+      if (localPlayerId !== playerId && gameState.players[localPlayerId].Lives > 0) {
         console.error("you win!");
         location.href = "/#/win"; // set href mention to /win
         setInGame(false);
         sendEvent("game_ended");
-        window.socket.close(); // close ws connection
+        window.socket.close();
+      } else {
+        location.href = "/#/lose";
+        setInGame(false);
+        window.socket.close();
       }
     }
 
-    let players = document.getElementById("players");
     let player = document.getElementById(`Player-${playerId + 1}`);
-    if (player) players.removeChild(player);
+    if (player) player.remove();
   }
-
-  updatePlayerLifeCounter(playerId);
+  if (InGame) {
+    updatePlayerLifeCounter(playerId);
+  }
 }

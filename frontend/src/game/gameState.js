@@ -67,6 +67,3 @@ export function updateGameState_player(playerID, GameState) {
   updatePlayerCoordinates(playerID, newX, newY);
 }
 
-export function updateConnectionStatus(PlayerId, Connected) {
-  if (!Connected) gameState.players[PlayerId - 1].Lives = 0;
-}

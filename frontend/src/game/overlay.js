@@ -1,4 +1,4 @@
-import { setInGame } from "./board.js";
+import { InGame, setInGame } from "./board.js";
 import { gameState } from "./gameState.js";
 
 export let refreshRate = 60;
@@ -40,29 +40,14 @@ export function Lives(id) {
   const element = document.getElementById("lives");
   element.innerHTML = `Lives: ${gameState.players[id - 1].Lives}`;
   element.className = `playerId-${id}`;
-
-  console.log("new lives of:", `player-${id - 1}`);
-  console.log(":", gameState.players[id - 1].Lives);
-
-  if (gameState.players[id - 1].Lives === 0) {
-    console.log("deathscreen:!");
-
-    console.error("oh no, you died!");
-    setInGame(false);
-    location.href = "/#/lose";
-    window.socket.close();
-    return true;
-    // document.getElementById("lobbyCountDown").innerHTML =
-    //   "You died! Better luck next time!";
-  }
 }
 
 export function updatePlayerLifeCounter(playerId) {
   console.log("updating player lives:", playerId);
   const localPlayer = parseInt(localStorage.getItem("Player"));
   if (playerId + 1 === localPlayer) {
-    let exit = Lives(localPlayer); // update for local
-    if (exit) return;
+    Lives(localPlayer);
+   // return;
   }
 
   // update for statistics'

@@ -49,29 +49,16 @@ function onConnectionLost(payload) {
   // setting their connected gameState to false
   gameState.players[PlayerId - 1].Connected = false;
   if (InGame) {
-    gameState.players[PlayerId - 1].Lives = 0; // kill them
-
     sendEvent("update_lives", {
-      PlayerId: PlayerId,
+      PlayerId: PlayerId-1,
       Kill: true,
     });
   }
-
+/*
   clearInterval(countdownInterval); // clear the interval when countdown reaches 0
 
   sendEvent("reset-countdown", { WaitTime: WaitTime }); // reset countdown timer?
-
-  // display stuff
-  const PIC = document.getElementById(`playerInfoContainer-${PlayerId}`);
-  if (PIC) {
-    PIC.style.filter = "blur(5px)";
-  }
-
-  const Lslot = document.getElementById(`Player-${PlayerId}`);
-  if (Lslot) {
-    Lslot.className = "lobbyPlayer notConnected";
-    Lslot.innerHTML = "";
-  }
+*/
 }
 
 function onLobbyUpdate(payload) {
@@ -102,7 +89,7 @@ function lobbyTimeLeft(payload) {
   const { Players, TimeLeft } = payload;
   console.log("timeleft:", TimeLeft, payload);
   WaitTime = TimeLeft;
-  if (typeof WaitTime === "number") {
+  if (typeof WaitTime === "number" && !InGame) {
     const lobbyCountDown = document.getElementById("lobbyCountDown");
     const CountDownMessage = (time) => {
       return `Game will begin in ${time} seconds!`;
