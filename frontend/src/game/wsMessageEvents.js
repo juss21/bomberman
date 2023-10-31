@@ -50,15 +50,21 @@ function onConnectionLost(payload) {
   gameState.players[PlayerId - 1].Connected = false;
   if (InGame) {
     sendEvent("update_lives", {
-      PlayerId: PlayerId-1,
+      PlayerId: PlayerId - 1,
       Kill: true,
     });
   }
-/*
-  clearInterval(countdownInterval); // clear the interval when countdown reaches 0
 
-  sendEvent("reset-countdown", { WaitTime: WaitTime }); // reset countdown timer?
-*/
+  const PIC = document.getElementById(`playerInfoContainer-${PlayerId}`);
+  if (PIC) {
+    PIC.style.filter = "blur(5px)";
+  }
+
+  const Lslot = document.getElementById(`Player-${PlayerId}`);
+  if (Lslot) {
+    Lslot.className = "lobbyPlayer notConnected";
+    Lslot.innerHTML = "";
+  }
 }
 
 function onLobbyUpdate(payload) {
