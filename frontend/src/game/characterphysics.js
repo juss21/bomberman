@@ -217,11 +217,11 @@ export function loseLife(payload) {
   const Kill = payload.Kill;
   console.log("ayload", payload);
 
-  if (!gameState.players[playerId].Invincible) {
+  if (!gameState.players[playerId].Invincible || Kill) {
     gameState.players[playerId].Lives -= Kill
       ? gameState.players[playerId].Lives
       : 1;
-      
+
     gameState.players[playerId].Invincible = true;
     let player = document.getElementById(`Player-${playerId + 1}`);
     player.style.opacity = 0.5;
@@ -244,6 +244,7 @@ export function loseLife(payload) {
         location.href = "/#/win"; // set href mention to /win
         setInGame(false);
         sendEvent("game_ended");
+        sendEvent("reset-countdown", { WaitTime: 1000 }); // reset countdown timer?
         window.socket.close();
       } else {
         location.href = "/#/lose";
