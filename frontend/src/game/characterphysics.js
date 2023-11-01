@@ -19,7 +19,6 @@ let animationId = null;
 const keysPressed = {};
 
 export function movePlayer(event) {
-  if (!InGame) return;
   const playerId = parseInt(localStorage.getItem("Player"));
 
   if (gameState.players[playerId - 1].Lives < 1) return;
@@ -31,8 +30,6 @@ export function movePlayer(event) {
   const player = document.getElementById(`Player-${playerId}`); // for movement
 
   if (event.key === " " && gameState.players[playerId - 1].Bombs > 0) {
-    if (!InGame) return;
-    
     const transformStyle = window
       .getComputedStyle(player)
       .getPropertyValue("transform");
@@ -51,8 +48,6 @@ export function movePlayer(event) {
   if (animationId) return;
 
   function moveAnimation() {
-    if (!InGame) return;
-
     const speed = (gameState.players[playerId - 1].Speed * 60) / refreshRate;
 
     // Calculate current positions based on key presses

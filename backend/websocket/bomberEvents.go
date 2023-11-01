@@ -82,6 +82,10 @@ func GameStarted(event Event, c *Client) error {
 }
 
 func GameEnded(event Event, c *Client) error {
+	for client := range c.client.clients {
+		c.client.removeClient(client)
+	}
+
 	gameInProgress = false
 	waitTime = 60
 	ResetMap()

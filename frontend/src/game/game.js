@@ -1,6 +1,6 @@
 import { LevelMap, drawTiles } from "./board.js";
 import { createGameHTML, toggleMenuHide } from "./createHtml.js";
-import { fillGameState_player } from "./gameState.js";
+
 import { gameLoop, playerMovement } from "./loop.js";
 import { Lives, PlayingAs, YourName } from "./overlay.js";
 import { sendEvent, startWebSocketConnction } from "./websocket.js";
@@ -13,7 +13,7 @@ export function StartGame(offline, playerName = "Player1") {
   } else {
     console.log("lobby entered.");
     localStorage.setItem("PlayerName", playerName);
-    fillGameState_player(); // fill gamestate object, with default player values
+    // fill gamestate object, with default player values
     startWebSocketConnction(); // set up a websocket connection
   }
 }

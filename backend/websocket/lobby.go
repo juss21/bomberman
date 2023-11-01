@@ -32,6 +32,13 @@ func SendMessage(event Event, c *Client) error {
 }
 
 func LobbyJoin(event Event, c *Client) error {
+	if gameInProgress {
+		errorMessage := "There is game already ongoing. Please wait."
+		ResetGame() // check whether game could be reset
+		SendResponse(errorMessage, "lobby-full", c)
+		c.client.removeClient(c)
+		return fmt.Errorf("game ongoing")
+	}
 
 	type Request struct {
 		PlayerName string `json:"PlayerName"`
@@ -58,19 +65,10 @@ func LobbyJoin(event Event, c *Client) error {
 	resp.CurrentLevel = currentLevel
 
 	// send playerid for our bomberman game
-	if playerId != -1 && !gameInProgress {
+	if playerId != -1 {
 		c.playerId = playerId
 		c.playerName = payload.PlayerName
 		SendResponse(resp, "lobby-joined", c)
-	} else {
-		errorMessage := "Lobby is full, please try again later!"
-		if gameInProgress {
-			errorMessage = "There is game already ongoing. Please wait."
-		}
-		ResetGame() // check whether game could be reset
-
-		// if failed to join lobby then:
-		SendResponse(errorMessage, "lobby-full", c)
 	}
 
 	for client := range c.client.clients {

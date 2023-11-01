@@ -6,6 +6,7 @@ import { gameState, updateGameState_player } from "./gameState.js";
 import { spawnBomb } from "./bombphysics.js";
 import { loseLife } from "./characterphysics.js";
 import { RenderGame } from "./game.js";
+import { fillGameState_player } from "./gameState.js";
 var WaitTime = 1000;
 var countdownInterval;
 
@@ -25,6 +26,7 @@ export const eventHandlers = {
 };
 
 function onConnection(payload) {
+  fillGameState_player();
   const { PlayerId, CurrentLevel } = payload;
   console.log("Server has set us as player:", `Player-${PlayerId}`);
 
@@ -44,6 +46,7 @@ function onBadConnection(payload) {
 }
 function onConnectionLost(payload) {
   const { PlayerId, PlayerName } = payload;
+  if (payload.PlayerName === "") return
   console.log(`${PlayerName} lost connection (player-${PlayerId})`);
 
   // setting their connected gameState to false
@@ -53,18 +56,20 @@ function onConnectionLost(payload) {
       PlayerId: PlayerId - 1,
       Kill: true,
     });
+  } else {
+    let player = document.getElementById(`Player-${PlayerId}`)
+    player.classList.remove("Connected")
+    player.classList.add("notConnected")
+    document.getElementById(`lobby-slot-${PlayerId}`).innerHTML = ""
+    document.getElementById(`lobbyCountDown`).innerHTML = "Waiting for more people, to start the game!"
+    sendEvent("update_lobby", { PlayerId: PlayerId - 1 });
   }
+  /* console.log(gameState.players)
 
-  const PIC = document.getElementById(`playerInfoContainer-${PlayerId}`);
-  if (PIC) {
-    PIC.style.filter = "blur(5px)";
-  }
+  clearInterval(countdownInterval); // clear the interval when countdown reaches 0
 
-  const Lslot = document.getElementById(`Player-${PlayerId}`);
-  if (Lslot) {
-    Lslot.className = "lobbyPlayer notConnected";
-    Lslot.innerHTML = "";
-  }
+  sendEvent("reset-countdown", { WaitTime: WaitTime }); // reset countdown timer? */
+
 }
 
 function onLobbyUpdate(payload) {

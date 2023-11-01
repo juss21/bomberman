@@ -56,6 +56,7 @@ func LostConnection(PlayerId int, c *Client) {
 
 	resp.PlayerId = PlayerId
 	resp.PlayerName = c.playerName
+	ResetGame()
 
 	for client := range c.client.clients {
 		SendResponse(resp, "connection-lost", client)
