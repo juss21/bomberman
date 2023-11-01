@@ -64,12 +64,16 @@ function onConnectionLost(payload) {
     document.getElementById(`lobbyCountDown`).innerHTML = "Waiting for more people, to start the game!"
     sendEvent("update_lobby", { PlayerId: PlayerId - 1 });
   }
-  /* console.log(gameState.players)
+  const PIC = document.getElementById(`playerInfoContainer-${PlayerId}`);
+  if (PIC) {
+    PIC.style.filter = "blur(5px)";
+  }
 
-  clearInterval(countdownInterval); // clear the interval when countdown reaches 0
-
-  sendEvent("reset-countdown", { WaitTime: WaitTime }); // reset countdown timer? */
-
+  const Lslot = document.getElementById(`Player-${PlayerId}`);
+  if (Lslot) {
+    Lslot.className = "lobbyPlayer notConnected";
+    Lslot.innerHTML = "";
+  }
 }
 
 function onLobbyUpdate(payload) {
