@@ -15,9 +15,9 @@ Destroying boxes with your explosions has a chance to drop upgrades, such as:
 
 ![Movement Speed](https://01.kood.tech/git/kasepuu/bomberman-dom/raw/branch/master/frontend/src/game/sprites/level01/speed.png) - Extra movement speed (capped out at 3 boots)
 
-Every Player has 3 lives. If you walk in to the explosion tile or stay in your bomb range, you will lose a life. Explosion tile looks like this:
+Every Player has 3 lives. If you walk in to the explosion tile or stay in your bomb range, you will lose a life. 
 
-![Explosion](https://01.kood.tech/git/kasepuu/bomberman-dom/raw/branch/master/frontend/src/game/sprites/level01/explosion.png)
+![Explosion](https://01.kood.tech/git/kasepuu/bomberman-dom/raw/branch/master/frontend/src/game/sprites/level01/explosion.png) - Explosion tile
 
 #### Our game:
 - only supports one active multiplayer session
