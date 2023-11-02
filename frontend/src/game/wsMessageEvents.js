@@ -79,8 +79,6 @@ function onConnectionLost(payload) {
 function onLobbyUpdate(payload) {
   const { Players } = payload;
 
-  console.log("players:", Players);
-
   for (let i = 0; i < Players.length; i++) {
     const element = document.getElementById(`Player-${Players[i].PlayerId}`);
     element.className = "lobbyPlayer Connected";
@@ -102,7 +100,6 @@ function onLobbyUpdate(payload) {
 
 function lobbyTimeLeft(payload) {
   const { Players, TimeLeft } = payload;
-  console.log("timeleft:", TimeLeft, payload);
   WaitTime = TimeLeft;
   if (typeof WaitTime === "number" && !InGame) {
     const lobbyCountDown = document.getElementById("lobbyCountDown");
@@ -117,7 +114,9 @@ function lobbyTimeLeft(payload) {
       WaitTime--;
       if (WaitTime < 30) {
         lobbyCountDown.innerHTML = CountDownMessage(WaitTime);
-        console.log("Waiting for " + WaitTime + " seconds...");
+        if (WaitTime < 10){
+          console.log("Game starting in " + WaitTime + " seconds...");
+        }
       }
 
       if (WaitTime <= 0 && Players.length > 1) {

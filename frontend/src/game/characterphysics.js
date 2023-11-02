@@ -211,14 +211,12 @@ function alivePlayers() {
       count++;
     }
   }
-  console.log("alive players:", count);
   return count;
 }
 
 export function loseLife(payload) {
   const playerId = payload.PlayerId;
   const Kill = payload.Kill;
-  console.log("ayload", payload);
 
   if (!gameState.players[playerId].Invincible || Kill) {
     gameState.players[playerId].Lives -= Kill

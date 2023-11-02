@@ -147,7 +147,6 @@ function menuHtml() {
     let multiplayerName = createElement("input", {
       id: "nameInput",
       type: "text",
-      value: "test",
       required: true,
     });
 
@@ -159,7 +158,7 @@ function menuHtml() {
 
     addEventListenerToElement(button1, "click", () => {
       console.log("game started!");
-      StartGame(true); // start the singleplayer instance!
+      StartGame(true); // start the singleplayer instance! //disabled for now :O
     });
     addEventListenerToElement(button2, "click", () => {
       const enteredName = multiplayerName.value.trim(); // trim name, to make sure its not empty

@@ -38,7 +38,7 @@ function preloadImage(src) {
 }
 
 export function preload() {
-  console.log("preloading:");
+  console.log("preloading sprites...");
   // preloading image elements
   preloadImage("src/game/sprites/mainMenu.png");
   preloadImage("src/game/sprites/players/1.png");
@@ -58,4 +58,6 @@ export function preload() {
   preloadImage("src/game/sprites/level01/p.png");
   preloadImage("src/game/sprites/level01/speed.png");
   preloadImage("src/game/sprites/level01/X.png");
+
+  console.log("preload completed.");
 }

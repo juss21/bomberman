@@ -22,7 +22,6 @@ func (m *wsManager) setupEventHandlers() {
 
 	/*lobby events*/
 	m.handlers["join_lobby"] = LobbyJoin
-	m.handlers["leave_lobby"] = LobbyLeave
 	m.handlers["update_lobby"] = LobbyUpdate
 	m.handlers["send_message"] = SendMessage
 	m.handlers["send-countdown-sync"] = RequestCountDownTimerSync

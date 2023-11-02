@@ -1,6 +1,8 @@
 package ws
 
-import "fmt"
+import (
+	"log"
+)
 
 /*for player id generation*/
 type Player struct {
@@ -37,7 +39,6 @@ func RemovePlayer(ID int) {
 			return
 		}
 	}
-	fmt.Println("Couldn't find player", ID)
 }
 
 func ResetGame() {
@@ -49,7 +50,7 @@ func ResetGame() {
 	}
 
 	if PlayerCount == 0 || PlayerCount == 1 {
-		fmt.Println("countdown has been reset:", PlayerCount)
+		log.Println("[Game] Lobby countdown has been reset:", PlayerCount)
 		waitTime = 60
 		gameInProgress = false
 		ResetMap()

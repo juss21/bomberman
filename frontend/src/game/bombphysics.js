@@ -122,7 +122,6 @@ export function plantBomb(
 }
 
 export function spawnBomb(playerId, X, Y) {
-  console.log("Spawning bomb at:", X, Y);
   changeTile(X, Y, "!");
   createBombTimer(X, Y, playerId);
 }

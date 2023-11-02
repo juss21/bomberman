@@ -1,7 +1,7 @@
 package ws
 
 import (
-	"fmt"
+	"log"
 	"math/rand"
 	"os"
 	"strings"
@@ -62,7 +62,7 @@ func ReadMapFile(mapName string) (LevelMap, error) {
 	if levelMap.Map != nil {
 		return levelMap, nil
 	}
-	fmt.Println("levelmap has no data:", levelMap.Map, "generating one...")
+	log.Println("[Game] empty map found:", levelMap.Map, "generating one...")
 
 	url := "backend/websocket/maps/" + mapName + ".txt" // tilemap_singleplayer || tilemap_multiplayer
 	mapData, err := os.ReadFile(url)

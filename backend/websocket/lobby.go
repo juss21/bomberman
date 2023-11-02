@@ -3,7 +3,6 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 )
 
 var waitTime = 60   // Default wait time (in seconds)
@@ -21,8 +20,6 @@ func SendMessage(event Event, c *Client) error {
 	if err := json.Unmarshal(event.Payload, &payload); err != nil {
 		return fmt.Errorf("bad payload in request: %v", err)
 	}
-
-	fmt.Println("received this payload:", payload)
 
 	for client := range c.client.clients {
 		SendResponse(payload, "update_chatbox", client)
@@ -80,12 +77,6 @@ func LobbyJoin(event Event, c *Client) error {
 	return nil
 }
 
-func LobbyLeave(event Event, c *Client) error {
-	fmt.Println("handling leave event!")
-
-	return nil
-}
-
 /*lobby wait*/
 
 func LobbyTimerUpdate(event Event, c *Client) error {
@@ -116,8 +107,6 @@ func LobbyUpdate(event Event, c *Client) error {
 		return fmt.Errorf("bad payload in request: %v", err)
 	}
 
-	fmt.Println("player:", payload.PlayerId, "sent update message to all clients!")
-
 	type ResponsePlayer struct {
 		PlayerId   int
 		PlayerName string
@@ -139,7 +128,6 @@ func LobbyUpdate(event Event, c *Client) error {
 	}
 
 	resp.TimeLeft, _ = LobbyStartCountdown(len(resp.Players))
-	fmt.Println("updated timeleft:", resp.TimeLeft)
 	// send back all connected users?
 	for client := range c.client.clients {
 		SendResponse(resp, "lobby-update", client)
@@ -184,8 +172,6 @@ func RequestCountDownTimerReset(event Event, c *Client) error {
 	if err := json.Unmarshal(event.Payload, &payload); err != nil {
 		return fmt.Errorf("bad payload in request: %v", err)
 	}
-
-	log.Println("CountDown reset requested: received waittime", payload.WaitTime)
 
 	type ResponsePlayer struct {
 		PlayerId   int

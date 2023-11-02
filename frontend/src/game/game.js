@@ -11,7 +11,6 @@ export function StartGame(offline, playerName = "Player1") {
 
     // offline (endless gamemode) play, must fetch map from backend!
   } else {
-    console.log("lobby entered.");
     localStorage.setItem("PlayerName", playerName);
     // fill gamestate object, with default player values
     startWebSocketConnction(); // set up a websocket connection

@@ -43,7 +43,6 @@ export function Lives(id) {
 }
 
 export function updatePlayerLifeCounter(playerId) {
-  console.log("updating player lives:", playerId);
   const localPlayer = parseInt(localStorage.getItem("Player"));
   if (playerId + 1 === localPlayer) {
     Lives(localPlayer);
@@ -51,9 +50,7 @@ export function updatePlayerLifeCounter(playerId) {
   }
 
   // update for statistics'
-  console.log("updating stats");
   const element = document.getElementById(`lives-${playerId + 1}`);
-  console.log("element", element);
   if (element) {
     element.innerHTML = `Lives: ${gameState.players[playerId].Lives}`;
     element.className = `playerInfoBox-lives playerId-${playerId}`;
