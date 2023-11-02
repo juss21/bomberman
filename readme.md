@@ -9,15 +9,15 @@ Bombs detonate within 2 seconds. Make sure to run away or hide behind a wall!
 
 Destroying boxes with your explosions has a chance to drop upgrades, such as: 
 
-<img src="https://01.kood.tech/git/kasepuu/bomberman-dom/raw/branch/master/frontend/src/game/sprites/level01/blast.png" style="width:30px; height:30px"/> - Bigger Explosion range
+<img src="https://01.kood.tech/git/kasepuu/bomberman-dom/raw/branch/master/frontend/src/game/sprites/level01/blast.png" width="30" height="30"/> - Bigger Explosion range
 
-<img src="https://01.kood.tech/git/kasepuu/bomberman-dom/raw/branch/master/frontend/src/game/sprites/level01/bomb.png" style="width:30px; height:30px"/> - Extra bomb
+<img src="https://01.kood.tech/git/kasepuu/bomberman-dom/raw/branch/master/frontend/src/game/sprites/level01/bomb.png" width="30" height="30"/> - Extra bomb
 
-<img src="https://01.kood.tech/git/kasepuu/bomberman-dom/raw/branch/master/frontend/src/game/sprites/level01/speed.png" style="width:30px; height:30px"/> - Extra movement speed (capped out at 3 boots)
+<img src="https://01.kood.tech/git/kasepuu/bomberman-dom/raw/branch/master/frontend/src/game/sprites/level01/speed.png" width="30" height="30"/> - Extra movement speed (capped out at 3 boots)
 
 Every Player has 3 lives. If you walk in to the explosion tile or stay in your bomb range, you will lose a life. 
 
-<img src="https://01.kood.tech/git/kasepuu/bomberman-dom/raw/branch/master/frontend/src/game/sprites/level01/explosion.png" style="width:30px; height:30px"/> - Explosion tile
+<img src="https://01.kood.tech/git/kasepuu/bomberman-dom/raw/branch/master/frontend/src/game/sprites/level01/explosion.png" width="30" height="30"/> - Explosion tile
 
 #### Our game:
 - only supports one active multiplayer session
