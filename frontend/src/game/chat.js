@@ -5,7 +5,7 @@ export function sendChatMessage(chatBar, event) {
   const localPlayerID = parseInt(localStorage.getItem("Player"));
   const localPlayerName = localStorage.getItem("PlayerName");
 
-  if (event.key === "Enter") {
+  if (event.key === "Enter" && chatBar.value.trim() !== "") {
     event.preventDefault();
 
     sendEvent("send_message", {
