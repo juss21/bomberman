@@ -40,4 +40,4 @@ Every Player has 3 lives. If you walk in to the explosion tile or stay in your b
 
 ### Authors:
 
-juss & kasepuu & alavrone & andreiRedi & laagusra
+juss & kasepuu & alavrone & andreiRedi & laagusra 
